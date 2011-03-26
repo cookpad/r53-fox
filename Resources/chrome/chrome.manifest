@@ -1,3 +1,4 @@
-content r53fox             file:content/
-locale  r53fox en-US       file:locale/en-US/
-skin    r53fox classic/1.0 file:skin/classic/
+content  r53fox             file:content/
+locale   r53fox en-US       file:locale/en-US/
+skin     r53fox classic/1.0 file:skin/classic/
+resource r53fox             file:modules/
