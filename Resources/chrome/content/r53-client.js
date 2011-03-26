@@ -10,6 +10,16 @@ R53Client.prototype = {
   TIMEOUT: 30000,
 
   // Actions on Hosted Zones
+  createHostedZone: function(xml, callback) {
+    var url = this.url('hostedzone');
+
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', url, !!callback);
+    xhr.setRequestHeader('Content-Length', xml.length);
+    xhr.setRequestHeader('Content-Type', 'text/xml');
+
+    return this.query(xhr, xml, callback);
+  }, // createHostedZone
 
   listHostedZones: function(params, callback) {
     var url = this.url('hostedzone');
@@ -21,8 +31,9 @@ R53Client.prototype = {
 
     var xhr = new XMLHttpRequest();
     xhr.open('GET', url, !!callback);
+
     return this.query(xhr, null, callback);
-  }, //listHostedZones
+  }, // listHostedZones
 
   // private
   query: function(xhr, body, callback) {
