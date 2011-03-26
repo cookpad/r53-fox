@@ -19,7 +19,15 @@ R53Client.prototype = {
     xhr.setRequestHeader('Content-Type', 'text/xml');
 
     return this.query(xhr, xml, callback);
-  }, // createHostedZone
+  },
+
+  getHostedZone: function(hostedZoneId, callback) {
+    var url = this.url('hostedzone', hostedZoneId);
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', url, !!callback);
+
+    return this.query(xhr, null, callback);
+  },
 
   listHostedZones: function(params, callback) {
     var url = this.url('hostedzone');
@@ -33,7 +41,7 @@ R53Client.prototype = {
     xhr.open('GET', url, !!callback);
 
     return this.query(xhr, null, callback);
-  }, // listHostedZones
+  },
 
   // private
   query: function(xhr, body, callback) {
