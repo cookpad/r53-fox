@@ -51,6 +51,40 @@ R53Client.prototype = {
     return this.query(xhr, null, callback);
   },
 
+  // Actions on Resource Records Sets
+  changeResourceRecordSets: function(hostedZoneId, xml, callback) {
+    var url = this.url('hostedzone', hostedZoneId, 'rrset');
+
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', url, !!callback);
+    xhr.setRequestHeader('Content-Length', xml.length);
+    xhr.setRequestHeader('Content-Type', 'text/xml');
+
+    return this.query(xhr, xml, callback);
+  },
+
+  listResourceRecordSets: function(hostedZoneId, params, callback) {
+    var url = this.url('hostedzone', hostedZoneId, 'rrset');
+
+    if (params) {
+      var qs = this.queryString(params);
+      url += ('?' + qs);
+    }
+
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', url, !!callback);
+
+    return this.query(xhr, null, callback);
+  },
+
+  getChange: function(changeId, callback) {
+    var url = this.url('change', changeId);
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', url, !!callback);
+
+    return this.query(xhr, null, callback);
+  },
+
   // private
   query: function(xhr, body, callback) {
     var date = (new Date()).toUTCString();
