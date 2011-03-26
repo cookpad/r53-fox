@@ -71,8 +71,8 @@ R53Client.prototype = {
 
       xhr.xml = function() {
         var responseText = xhr.responseText;
-        responseText = responseText.replace(/<\s*\?\s*xml\s+version\s*=\s*"1.0"\s*\?\s*>/, '');
-        responseText = responseText.replace(/xmlns="[^"]*"/, ''); // "
+        responseText = responseText.replace(/<\s*\?\s*xml\s+version\s*=\s*"[^"]*"\s*\?\s*>/, '');
+        responseText = responseText.replace(/xmlns="[^"]*"/, '');
         var xml = new XML(responseText);
         return xml;
       };
