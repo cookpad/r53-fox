@@ -29,6 +29,14 @@ R53Client.prototype = {
     return this.query(xhr, null, callback);
   },
 
+  deleteHostedZone: function(hostedZoneId, callback) {
+    var url = this.url('hostedzone', hostedZoneId);
+    var xhr = new XMLHttpRequest();
+    xhr.open('DELETE', url, !!callback);
+
+    return this.query(xhr, null, callback);
+  },
+
   listHostedZones: function(params, callback) {
     var url = this.url('hostedzone');
 
