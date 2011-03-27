@@ -1,0 +1,8 @@
+syntax: glob
+.DS_Store
+*.dmg
+R53Fox.app
+r53-fox_win
+*setup.exe
+*.log
+*.tmp
