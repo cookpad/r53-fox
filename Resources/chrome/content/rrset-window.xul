@@ -50,7 +50,7 @@
 
   <!-- statusbar -->
   <statusbar>
-    <spacer flex="1" />
+    <spacer class="statusbar" flex="1" />
     <image id="rrset-window-loader" class="loader" hidden="true" src="loader.gif" />
   </statusbar>
 </window>

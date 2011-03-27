@@ -9,3 +9,7 @@ vbox.content {
 menuitem.bold {
   font-weight: bold;
 }
+
+spacer.statusbar {
+  height: 22px;
+}
