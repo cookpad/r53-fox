@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+<?xml-stylesheet href="chrome://r53fox/skin/" type="text/css"?>
+<!DOCTYPE window SYSTEM "chrome://r53fox/locale/r53fox.dtd">
+
+<window  xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+  id="rrset-window" onload="onLoad();" width="640" height="480">
+
+  <!-- scripts -->
+  <script src="global.js" />
+  <script src="rrset-window.js" />
+  <script src="rrset-treeview.js" />
+
+  <!-- body -->
+
+  <!-- context menu -->
+  <popupset>
+    <menupopup id="rrset-tree-contenx-menu">
+      <menuitem label="Delete" oncommand="$view.deleteHostedZone()" />
+    </menupopup>
+  </popupset>
+
+  <!-- body -->
+  <vbox id="rrset-treebox" class="content" flex="1">
+    <hbox>
+      Search:
+      <textbox id="rrset-tree-filter" oninput="$view.invalidate();" />
+      <button label="Clear" oncommand="with($('rrset-tree-filter')) { value = ''; oninput(); }" />
+    </hbox>
+    <tree id="rrset-tree" seltype="single" enableColumnDrag="true" flex="1" ondblclick="$view.showDetail(event);">
+      <treecols>
+        <treecol id="rrset-tree.Name" label="Name" flex="1" persist="width ordinal hidden sortDirection" />
+        <splitter class="tree-splitter" />
+        <treecol id="rrset-tree.Type" label="Type" flex="1" persist="width ordinal hidden sortDirection" />
+        <splitter class="tree-splitter" />
+        <treecol id="rrset-tree.TTL" label="TTL" flex="1" persist="width ordinal hidden sortDirection" />
+        <splitter class="tree-splitter" />
+        <treecol id="rrset-tree.IsTruncated" label="Is Truncated" flex="1" persist="width ordinal hidden sortDirection" />
+      </treecols>
+      <treechildren context="rrset-tree-contenx-menu" />
+    </tree>
+
+    <hbox>
+      <button label="Create" oncommand="$view.createHostedZone();" />
+      <button label="Refresh" oncommand="$view.refresh();" />
+      <spacer flex="1" />
+      <button label="Close" oncommand="close();" />
+    </hbox>
+  </vbox>
+
+  <!-- statusbar -->
+  <statusbar>
+    <spacer flex="1" />
+    <image id="rrset-window-loader" class="loader" hidden="true" src="loader.gif" />
+  </statusbar>
+</window>

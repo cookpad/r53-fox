@@ -1,4 +1,5 @@
-function HostedZoneTreeView() {
+function RRSetTreeView(hostedZoneId) {
+  this.hostedZoneId = hostedZoneId;
   this.rows = [];
   this.printRows = [];
   this.rowCount = 0;
@@ -6,7 +7,7 @@ function HostedZoneTreeView() {
   this.sorted = false;
 }
 
-HostedZoneTreeView.prototype = {
+RRSetTreeView.prototype = {
   getCellText: function(row, column) {
     return $CELL(this.printRows[row], column.id);
   },
@@ -34,7 +35,7 @@ HostedZoneTreeView.prototype = {
   invalidate: function() {
     this.printRows.length = 0;
 
-    var filterValue = $V('hosted-zone-tree-filter');
+    var filterValue = $V('rrset-tree-filter');
 
     function filter(elem) {
       if (!filterValue) { return true; }
@@ -70,12 +71,12 @@ HostedZoneTreeView.prototype = {
     this.rows.length = 0;
 
     $R53(function(r53cli) {
-      var xhr = r53cli.listHostedZones();
+      var xhr = r53cli.listResourceRecordSets(this.hostedZoneId);
 
-      for each (var member in xhr.xml()..HostedZones.HostedZone) {
+      for each (var member in xhr.xml()..ResourceRecordSets.ResourceRecordSet) {
         this.rows.push(member);
       }
-    }.bind(this), $('main-window-loader'));
+    }.bind(this), $('rrset-window-loader'));
 
     this.invalidate();
   },
@@ -85,33 +86,36 @@ HostedZoneTreeView.prototype = {
     return (idx != -1) ? this.printRows[idx] : null;
   },
 
-  createHostedZone: function() {
+  createRRSet: function() {
     var result = openModalDialog('hosted-zone-create-window');
     if (!result) { return; }
 
-    var xml = <CreateHostedZoneRequest xmlns="https://route53.amazonaws.com/doc/2010-10-01/"></CreateHostedZoneRequest>;
+    var xml = <CreateRRSetRequest xmlns="https://route53.amazonaws.com/doc/2010-10-01/"></CreateRRSetRequest>;
     xml.Name = result.name;
     xml.CallerReference = result.callerReference;
 
     if (result.comment) {
-      xml.HostedZoneConfig.Comment = result.comment;
+      xml.RRSetConfig.Comment = result.comment;
     }
 
     $R53(function(r53cli) {
-      r53cli.createHostedZone('<?xml version="1.0" encoding="UTF-8"?>' + xml);
+      r53cli.createRRSet('<?xml version="1.0" encoding="UTF-8"?>' + xml);
       this.refresh();
     }.bind(this), $('main-window-loader'));
   },
 
-  showDetail: function() {
+  showDetail: function(event) {
     var row = this.selectedRow();
-    if (!row) { return; }
+
+    if (!row || (event && event.target.tagName != 'treechildren')) {
+      return;
+    }
 
     var hzid = this.hostedZoneId(row);
     var xhr = null;
 
     $R53(function(r53cli) {
-      xhr = r53cli.getHostedZone(hzid);
+      xhr = r53cli.getRRSet(hzid);
     }, $('main-window-loader'));
 
     if (xhr && xhr.success()) {
@@ -119,7 +123,7 @@ HostedZoneTreeView.prototype = {
     }
   },
 
-  deleteHostedZone: function() {
+  deleteRRSet: function() {
     var row = this.selectedRow();
     if (!row) { return; }
 
@@ -131,20 +135,17 @@ HostedZoneTreeView.prototype = {
     }
 
     $R53(function(r53cli) {
-      r53cli.deleteHostedZone(hzid);
+      r53cli.deleteRRSet(hzid);
       this.refresh();
     }.bind(this), $('main-window-loader'));
   },
 
-  openRRSet: function(event) {
+  openRRSet: function() {
     var row = this.selectedRow();
-
-    if (!row || (event && event.target.tagName != 'treechildren')) {
-      return;
-    }
+    if (!row) { return; }
 
     var hzid = this.hostedZoneId(row);
-    openModalDialog('rrset-window', {hostedZoneId:hzid, hostedZoneName:row.Name.toString()});
+    openModalDialog('rrset-window');
   },
 
   selectByName: function(name) {
