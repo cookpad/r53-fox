@@ -73,7 +73,7 @@ function $R53(callback, loader, self) {
 
 function openModalDialog(name, args, features) {
   if (!features) {
-    features = 'chrome,modal,centerscreen';
+    features = 'chrome,modal,chrome,dialog=no,resizabl,centerscreen';
   }
 
   var h = {accepted:false, result:null};
