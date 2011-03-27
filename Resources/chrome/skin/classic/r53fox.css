@@ -1,3 +1,7 @@
 image.loader {
   margin: 3px;
 }
+
+vbox.content {
+  margin: 5px;
+}

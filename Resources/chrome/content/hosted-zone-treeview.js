@@ -3,76 +3,50 @@ function HostedZoneTreeView() {
   this.printRows = [];
   this.rowCount = 0;
   this.selection = null;
-  //this.sorted = false;
+  this.sorted = false;
 }
 
 HostedZoneTreeView.prototype = {
   getCellText: function(row, column) {
-    try{
-    var keys = column.id.toString().split('.');
-    if (keys.length < 2) { return null; }
-    keys.shift();
-
-    var cell = this.printRows[row];
-
-    for (var i = 0; i < keys.length; i++) {
-      var key = keys[i];
-      cell = cell[key];
-    }
-
-    return cell.toString();
-    } catch(e) {
-      alert(e);
-    }
+    return $CELL(this.printRows[row], column.id);
   },
 
   setTree: function(tree) {
     this.tree = tree;
   },
 
-  /*
   isSorted: function() {
     return this.sorted;
   },
 
   cycleHeader: function(column) {
-    var user = this.selectedRow();
+    var row = this.selectedRow();
 
-    if (sortRowsByColumn(column, this.rows)) {
-      this.invalidate();
-      this.sorted = true;
+    sortRowsByColumn(column, this.rows);
+    this.invalidate();
+    this.sorted = true;
 
-      if (user) {
-        this.selectByName(user.UserName);
-      }
+    if (row) {
+      this.selectByName(row.Name);
     }
   },
-   */
 
   invalidate: function() {
-    try {
     this.printRows.length = 0;
 
-    //var filterValue = ($('user-tree-filter').value || '').trim();
+    var filterValue = $V('hosted-zone-tree-filter');
 
     function filter(elem) {
-      /*
-      var rp = new RegExp('^' + pathValue);
-      var rv = new RegExp(filterValue);
+      if (!filterValue) { return true; }
 
-      if (!rp.test(elem.Path.toString())) {
-        return false;
-      }
+      var r = new RegExp(filterValue);
 
       for each (var child in elem.*) {
-        if (rv.test(child.toString())) {
-          return true;
-        }
+        var innerText = child.toString().replace(/<[^>]+>/g, '');
+        if (r.test(innerText)) { return true;  }
       }
 
       return false;
-       */
-      return true;
     };
 
     for (var i = 0; i < this.rows.length; i++) {
@@ -91,23 +65,20 @@ HostedZoneTreeView.prototype = {
     }
 
     this.tree.invalidate();
-    } catch(e) {
-      alert(e);
-    }
   },
 
   refresh: function() {
+    this.rows.length = 0;
+
     $R53(function(r53cli) {
       var xhr = r53cli.listHostedZones();
-
-      this.rows.length = 0;
 
       for each (var member in xhr.xml()..HostedZones.HostedZone) {
         this.rows.push(member);
       }
+    }.bind(this), $('main-window-loader'));
 
-      this.invalidate();
-    }, $('main-window-loader'), this);
+    this.invalidate();
     /*
     this.rows.length = 0;
 
@@ -139,44 +110,37 @@ HostedZoneTreeView.prototype = {
       */
   },
 
-  onDblclick: function(event) {
-    /*
-    var user = this.selectedRow();
-
-    if (!user || (event && event.target.tagName != 'treechildren')) {
-      return;
-    }
-
-    var userName = user.UserName;
-    var xhr = null;
-
-    openModalWindow('user-detail-window.xul', 'user-datail-window', 640, 480,
-                    {iamcli:this.iamcli, userName:userName});
-     */
-  },
-
-  /*
   selectedRow: function() {
     var idx = this.selection.currentIndex;
-    return (idx != -1) ? this.rows[idx] : null;
+    return (idx != -1) ? this.printRows[idx] : null;
   },
 
-  openUserCertWindow: function(event) {
-    var user = this.selectedRow();
-    var userName = user.UserName;
+  showDetail: function() {
+    var row = this.selectedRow();
+    var hzid = this.hostedZoneId(row);
+    var xhr = null;
 
-    openModalWindow('user-cert-window.xul', 'user-cert-window', 640, 480,
-                    {iamcli:this.iamcli, userName:userName});
+    $R53(function(r53cli) {
+      xhr = r53cli.getHostedZone(hzid);
+    }, $('main-window-loader'));
+
+    if (xhr && xhr.success()) {
+      openModalDialog('hosted-zone-detail-window', {xml: xhr.xml()});
+    }
   },
+  
 
-  deleteUser: function() {
-    var user = this.selectedRow();
-    var userName = user.UserName;
+  deleteRow: function() {
+    var row = this.selectedRow();
+    if (!row) { return; }
 
-    if (!confirm("Are you sure you want to delete '" + userName + "' ?")) {
+    var name = row.Name.toString();
+
+    if (!confirm("Are you sure you want to delete '" + name + "' ?")) {
       return;
     }
 
+    /*
     protect(function() {
       inProgress(function() {
         var xhr = this.iamcli.query_or_die('ListAccessKeys', [['UserName', userName]]);
@@ -215,8 +179,10 @@ HostedZoneTreeView.prototype = {
         this.refresh();
       }.bind(this));
     }.bind(this));
+      */
   },
 
+  /*
   openUserEditDialog: function() {
     var user = this.selectedRow();
     openDialog('chrome://iamfox/content/user-edit-dialog.xul', 'user-edit-dialog', 'chrome,modal',
@@ -239,21 +205,19 @@ HostedZoneTreeView.prototype = {
     var user = this.selectedRow();
     openDialog('chrome://iamfox/content/user-open-console-dialog.xul', 'user-open-console-dialog', 'chrome,modal', {user:user});
   },
-
+*/
   selectByName: function(name) {
-    var rows = this.rows;
+    for (var i = 0; i < this.rows.length; i++) {
+      var row = this.rows[i];
 
-    for (var i = 0; i < rows.length; i++) {
-      var user = rows[i];
-
-      if (user.UserName == name) {
+      if (user.Name.toString() == name.toString()) {
         this.selection.select(i);
       }
     }
 
     this.rows
   },
-
+/*
   openUserGroupWindow: function() {
     var user = this.selectedRow();
 
@@ -284,4 +248,10 @@ HostedZoneTreeView.prototype = {
     }
   }
     */
+
+  hostedZoneId: function(row) {
+    var hzid = row.Id.toString();
+    hzid = hzid.split('/');
+    return hzid[hzid.length - 1];
+  }
 };

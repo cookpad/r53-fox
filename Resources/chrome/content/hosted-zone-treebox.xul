@@ -11,7 +11,7 @@
   <!-- context menu -->
   <popupset>
     <menupopup id="hosted-zone-tree-contenx-menu">
-      <menuitem label="Edit" oncommand="" />
+      <menuitem label="Detail" oncommand="$view.showDetail();" />
       <menuseparator />
       <menu label="Copy to Clipboard">
         <menupopup>
@@ -19,19 +19,24 @@
         </menupopup>
       </menu>
       <menuseparator />
-      <menuitem label="Delete" oncommand="" />
+      <menuitem label="Delete" oncommand="$view.deleteRow()" />
     </menupopup>
   </popupset>
 
   <!-- body -->
-  <vbox id="hosted-zone-treebox" flex="1">
+  <vbox id="hosted-zone-treebox" class="content" flex="1">
+    <hbox>
+      Search:
+      <textbox id="hosted-zone-tree-filter" oninput="$view.invalidate();" />
+      <button label="Clear" oncommand="with($('hosted-zone-tree-filter')) { value = ''; oninput(); }" />
+    </hbox>
     <tree id="hosted-zone-tree" seltype="single" enableColumnDrag="true" flex="1" ondblclick="this._view.onDblclick(event);">
       <treecols>
         <treecol id="hosted-zone-tree.Id" label="ID" flex="1" persist="width ordinal hidden sortDirection" />
         <splitter class="tree-splitter" />
         <treecol id="hosted-zone-tree.Name" label="Name" flex="1" persist="width ordinal hidden sortDirection" />
         <splitter class="tree-splitter" />
-        <treecol id="hosted-zone-tree.CallerReference" label="CallerReference" flex="1" persist="width ordinal hidden sortDirection" />
+        <treecol id="hosted-zone-tree.Caller Reference" label="CallerReference" flex="1" persist="width ordinal hidden sortDirection" />
         <splitter class="tree-splitter" />
         <treecol id="hosted-zone-tree.Config.Comment" label="Comment" flex="1" persist="width ordinal hidden sortDirection" />
       </treecols>

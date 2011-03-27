@@ -20,8 +20,11 @@ function example() {
 }
 
 function editAccount() {
-  openModalDialog('account-dialog', function(result) {
+  var result = openModalDialog('account-dialog');
+
+  if (result) {
     Prefs.accessKeyId = result.accessKeyId;
     Prefs.secretAccessKey = result.secretAccessKey;
-  });
+    $view.refresh();
+  }
 }

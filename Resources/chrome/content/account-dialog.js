@@ -7,7 +7,7 @@ function onLoad() {
 }
 
 function onDialogAccept() {
-  var retval = window.arguments[0];
+  var args = window.arguments[0];
 
   var accessKeyId = $V('account-dialog-access-key-id');
   var secretAccessKey = $V('account-dialog-secret-access-key');
@@ -17,8 +17,8 @@ function onDialogAccept() {
     return false;
   }
 
-  retval.accepted = true;
-  retval.result = {accessKeyId:accessKeyId, secretAccessKey:secretAccessKey};
+  args.accepted = true;
+  args.result = {accessKeyId:accessKeyId, secretAccessKey:secretAccessKey};
 
   return true;
 }
