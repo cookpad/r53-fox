@@ -1,4 +1,4 @@
-var EXPORTED_SYMBOLS = ['b64_hmac_sha1'];
+var EXPORTED_SYMBOLS = ['b64_hmac_sha1', 'b64_sha1'];
 
 /*
  * A JavaScript implementation of the Secure Hash Algorithm, SHA-1, as defined

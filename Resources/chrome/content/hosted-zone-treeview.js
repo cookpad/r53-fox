@@ -57,7 +57,6 @@ HostedZoneTreeView.prototype = {
       }
     }
 
-
     if (this.rowCount != this.printRows.length) {
       this.tree.rowCountChanged(0, -this.rowCount);
       this.rowCount = this.printRows.length;
@@ -88,7 +87,20 @@ HostedZoneTreeView.prototype = {
 
   createHostedZone: function() {
     var result = openModalDialog('hosted-zone-create-window');
-    alert(result);
+    if (!result) { return; }
+
+    var xml = <CreateHostedZoneRequest xmlns="https://route53.amazonaws.com/doc/2010-10-01/"></CreateHostedZoneRequest>;
+    xml.Name = result.name;
+    xml.CallerReference = result.callerReference;
+
+    if (result.comment) {
+      xml.HostedZoneConfig.Comment = result.comment;
+    }
+
+    $R53(function(r53cli) {
+      r53cli.createHostedZone('<?xml version="1.0" encoding="UTF-8"?>' + xml);
+      this.refresh();
+    }.bind(this), $('main-window-loader'));
   },
 
   showDetail: function(event) {

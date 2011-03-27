@@ -20,12 +20,8 @@
       </columns>
       <rows>
         <row>
-          <label control="hosted-zone-create-window-id" value="ID" />
-          <textbox id="hosted-zone-create-window-id" />
-        </row>
-        <row>
           <label control="hosted-zone-create-window-name" value="Name" />
-          <textbox id="hosted-zone-create-window-name" />
+          <textbox id="hosted-zone-create-window-name" onblur="inputCallerReference();"/>
         </row>
         <row>
           <label control="hosted-zone-create-window-caller-reference" value="Caller Reference" />
