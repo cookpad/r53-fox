@@ -106,7 +106,7 @@ HostedZoneTreeView.prototype = {
   },
   
 
-  deleteHostedZone: function() {
+  deleteRow: function() {
     var row = this.selectedRow();
     if (!row) { return; }
 
@@ -118,7 +118,7 @@ HostedZoneTreeView.prototype = {
     }
 
     $R53(function(r53cli) {
-      r53cli.deleteHostedZone('hzid');
+      r53cli.deleteHostedZone(hzid);
       this.refresh();
     }.bind(this), $('main-window-loader'));
   },
