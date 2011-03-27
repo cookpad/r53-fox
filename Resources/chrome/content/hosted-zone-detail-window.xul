@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+<?xml-stylesheet href="chrome://r53fox/skin/" type="text/css"?>
+<?xul-overlay href="chrome://r53fox/content/hosted-zone-treebox.xul"?>
+<!DOCTYPE window SYSTEM "chrome://r53fox/locale/r53fox.dtd">
+
+<window  xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+  id="hosted-zone-detail-window" title="Hosted Zone" onload="onLoad();">
+
+  <!-- scripts -->
+  <script src="global.js" />
+  <script src="hosted-zone-detail-window.js" />
+
+  <!-- body -->
+  <vbox class="content" flex="1">
+    <grid>
+      <columns>
+        <column flex="1" />
+        <column flex="2" />
+      </columns>
+      <rows>
+        <row>
+          <label control="hosted-zone-detail-window-id" value="ID" />
+          <textbox id="hosted-zone-detail-window-id" readonly="true" />
+        </row>
+        <row>
+          <label control="hosted-zone-detail-window-name" value="Name" />
+          <textbox id="hosted-zone-detail-window-name" readonly="true" />
+        </row>
+        <row>
+          <label control="hosted-zone-detail-window-caller-reference" value="Caller Reference" />
+          <textbox id="hosted-zone-detail-window-caller-reference" readonly="true" />
+        </row>
+        <row>
+          <label control="hosted-zone-detail-window-comment" value="Comment" />
+          <textbox id="hosted-zone-detail-window-comment" readonly="true" />
+        </row>
+        <row>
+          <label control="hosted-zone-detail-window-name-server" value="Name Server" />
+          <textbox id="hosted-zone-detail-window-name-server" multiline="true" rows="5" readonly="true" />
+        </row>
+      </rows>
+    </grid>
+    <hbox>
+      <spacer flex="1" />
+      <button label="OK" oncommand="close();" />
+    </hbox>
+  </vbox>
+</window>

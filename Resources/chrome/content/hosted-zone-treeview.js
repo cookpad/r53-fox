@@ -86,6 +86,11 @@ HostedZoneTreeView.prototype = {
     return (idx != -1) ? this.printRows[idx] : null;
   },
 
+  createHostedZone: function() {
+    var result = openModalDialog('hosted-zone-create-window');
+    alert(result);
+  },
+
   showDetail: function(event) {
     var row = this.selectedRow();
 
@@ -104,9 +109,8 @@ HostedZoneTreeView.prototype = {
       openModalDialog('hosted-zone-detail-window', {xml: xhr.xml()});
     }
   },
-  
 
-  deleteRow: function() {
+  deleteHostedZone: function() {
     var row = this.selectedRow();
     if (!row) { return; }
 

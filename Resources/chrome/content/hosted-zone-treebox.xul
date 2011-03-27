@@ -22,7 +22,7 @@
         </menupopup>
       </menu>
       <menuseparator />
-      <menuitem label="Delete" oncommand="$view.deleteRow()" />
+      <menuitem label="Delete" oncommand="$view.deleteHostedZone()" />
     </menupopup>
   </popupset>
 
@@ -47,6 +47,7 @@
     </tree>
 
     <hbox>
+      <button label="Create" oncommand="$view.createHostedZone();" />
       <button label="Refresh" oncommand="$view.refresh();" />
       <spacer flex="1" />
       <button label="Account" oncommand="editAccount();" />
