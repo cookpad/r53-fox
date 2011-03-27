@@ -16,6 +16,8 @@
   <!-- context menu -->
   <popupset>
     <menupopup id="rrset-tree-contenx-menu">
+      <menuitem label="Detail" class="bold" oncommand="$view.showDetail()" />
+      <menuseparator />
       <menuitem label="Delete" oncommand="$view.deleteHostedZone()" />
     </menupopup>
   </popupset>
@@ -34,8 +36,6 @@
         <treecol id="rrset-tree.Type" label="Type" flex="1" persist="width ordinal hidden sortDirection" />
         <splitter class="tree-splitter" />
         <treecol id="rrset-tree.TTL" label="TTL" flex="1" persist="width ordinal hidden sortDirection" />
-        <splitter class="tree-splitter" />
-        <treecol id="rrset-tree.IsTruncated" label="Is Truncated" flex="1" persist="width ordinal hidden sortDirection" />
       </treecols>
       <treechildren context="rrset-tree-contenx-menu" />
     </tree>

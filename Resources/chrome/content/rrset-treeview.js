@@ -87,7 +87,7 @@ RRSetTreeView.prototype = {
   },
 
   createRRSet: function() {
-    var result = openModalDialog('hosted-zone-create-window');
+    var result = openModalDialog('rrset-create-window');
     if (!result) { return; }
 
     var xml = <CreateRRSetRequest xmlns="https://route53.amazonaws.com/doc/2010-10-01/"></CreateRRSetRequest>;
@@ -111,16 +111,7 @@ RRSetTreeView.prototype = {
       return;
     }
 
-    var hzid = this.hostedZoneId(row);
-    var xhr = null;
-
-    $R53(function(r53cli) {
-      xhr = r53cli.getRRSet(hzid);
-    }, $('main-window-loader'));
-
-    if (xhr && xhr.success()) {
-      openModalDialog('hosted-zone-detail-window', {xml: xhr.xml()});
-    }
+    openModalDialog('rrset-detail-window', {resourceRecordSet: row});
   },
 
   deleteRRSet: function() {
