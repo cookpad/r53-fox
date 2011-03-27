@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+<?xml-stylesheet href="chrome://r53fox/skin/" type="text/css"?>
+<!DOCTYPE window SYSTEM "chrome://r53fox/locale/r53fox.dtd">
+
+<overlay xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+  <!-- scripts -->
+  <script src="hosted-zone-treeview.js" />
+
+  <!-- menu -->
+  <!-- context menu -->
+  <popupset>
+    <menupopup id="hosted-zone-tree-contenx-menu">
+      <menuitem label="Edit" oncommand="" />
+      <menuseparator />
+      <menu label="Copy to Clipboard">
+        <menupopup>
+          <menuitem label="XXX" oncommand="" />
+        </menupopup>
+      </menu>
+      <menuseparator />
+      <menuitem label="Delete" oncommand="" />
+    </menupopup>
+  </popupset>
+
+  <!-- body -->
+  <vbox id="hosted-zone-treebox" flex="1">
+    <tree id="hosted-zone-tree" seltype="single" enableColumnDrag="true" flex="1" ondblclick="this._view.onDblclick(event);">
+      <treecols>
+        <treecol id="hosted-zone-tree.Id" label="ID" flex="1" persist="width ordinal hidden sortDirection" />
+        <splitter class="tree-splitter" />
+        <treecol id="hosted-zone-tree.Name" label="Name" flex="1" persist="width ordinal hidden sortDirection" />
+        <splitter class="tree-splitter" />
+        <treecol id="hosted-zone-tree.CallerReference" label="CallerReference" flex="1" persist="width ordinal hidden sortDirection" />
+        <splitter class="tree-splitter" />
+        <treecol id="hosted-zone-tree.Config.Comment" label="Comment" flex="1" persist="width ordinal hidden sortDirection" />
+      </treecols>
+      <treechildren context="hosted-zone-tree-contenx-menu" />
+    </tree>
+
+    <hbox>
+      <button label="Refresh" oncommand="$view.refresh();" />
+      <spacer flex="1" />
+      <button label="Account" oncommand="editAccount();" />
+    </hbox>
+  </vbox>
+</overlay>

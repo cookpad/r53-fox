@@ -16,7 +16,9 @@ function $V(element) {
   return ($.apply(this, [element]).value || '').trim();
 }
 
-function $R53(callback, loader) {
+function $R53(callback, loader, self) {
+  if (!self) { self = this; }
+
   var accessKeyId = Prefs.accessKeyId;
   var secretAccessKey = Prefs.secretAccessKey;
 
@@ -30,19 +32,19 @@ function $R53(callback, loader) {
     return r53cli;
   }
 
+  var callback_in_self = function() {
+    callback.apply(self, [r53cli]);
+  };
+  
   if (loader) {
-    var callback_orig = callback;
+    var callback_in_self_orig = callback_in_self;
 
-    callback = function(client) {
-      progress.apply(this, [loader, function() {
-        callback_orig.apply(this, [client]);
-      }]);
-    }
+    callback_in_self = function() {
+      return progress(loader, callback_in_self_orig);
+    };
   }
 
-  return protect.apply(this, [function() {
-    callback.apply(this, [r53cli]);
-  }]);
+  return protect(callback_in_self, this.alert);
 }
 
 function openModalDialog(name, callback, features) {
@@ -66,23 +68,22 @@ function protect(callback, alert) {
   var retval = null;
 
   try {
-    retval = callback.apply(this);
+    retval = callback();
   } catch (e) {
-    this.alert(e);
+    if (alert) { alert(e); }
   }
 
   return retval;
 }
 
 function progress(loader, callback) {
-  loader = $.apply(this, [loader]);
   loader.hidden = false;
 
   var retval = null;
   var exception = null;
 
   try {
-    retval = callback.apply(this);
+    retval = callback();
   } catch (e) {
     exception = e;
   }
@@ -95,3 +96,4 @@ function progress(loader, callback) {
 
   return retval;
 }
+
