@@ -21,6 +21,6 @@ var Prefs = {
 
   set secretAccessKey(v) {
     v = (v || '').toString().trim();
-    prefBranch.setCharPref('secretAccessKey', v);
+    prefs.setCharPref('secretAccessKey', v);
   }
 };

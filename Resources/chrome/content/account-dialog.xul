@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+<?xml-stylesheet href="chrome://r53fox/skin/" type="text/css"?>
+<!DOCTYPE window SYSTEM "chrome://r53fox/locale/r53fox.dtd">
+
+<dialog xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+  title="Account"
+  buttons="accept,cancel"
+  ondialogaccept="return onDialogAccept();"
+  ondialogcancel="return true;"
+  onload="onLoad();">
+
+  <!-- scripts -->
+  <script src="account-dialog.js" />
+
+  <!-- inputs -->
+  <label control="account-dialog-access-key-id" value="AWS Access Key ID" />
+  <textbox id="account-dialog-access-key-id"/>
+  <label control="account-dialog-secret-access-key" value="AWS Secret Access Key" />
+  <textbox id="account-dialog-secret-access-key" type="password" />
+</dialog>

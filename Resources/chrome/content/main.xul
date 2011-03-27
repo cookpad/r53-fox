@@ -1,10 +1,8 @@
 <?xml version="1.0"?>
 <?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
 <?xml-stylesheet href="chrome://r53fox/skin/" type="text/css"?>
-
 <!DOCTYPE window SYSTEM "chrome://r53fox/locale/r53fox.dtd">
 
-<!-- main window -->
 <window  xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
   id="main-window" title="R53 Fox">
 
@@ -16,6 +14,7 @@
     <menubar>
       <menu label="File">
         <menupopup>
+          <menuitem label="Example" oncommand="example();" />
           <menuitem label="Exit" oncommand="window.close();" />
         </menupopup>
       </menu>
@@ -26,4 +25,21 @@
       </menu>
     </menubar>
   </toolbox>
+
+  <!-- body -->
+  <vbox flex="1">
+    <box flex="1">
+      <spacer flex="1" />
+    </box>
+    <hbox>
+      <spacer flex="1" />
+      <button label="Account" oncommand="editAccount();" />
+    </hbox>
+  </vbox>
+
+  <!-- statusbar -->
+  <statusbar>
+    <spacer flex="1" />
+    <image id="main-window-loader" class="loader" hidden="true" src="loader.gif" />
+  </statusbar>
 </window>
