@@ -5,3 +5,7 @@ image.loader {
 vbox.content {
   margin: 5px;
 }
+
+menuitem.bold {
+  font-weight: bold;
+}

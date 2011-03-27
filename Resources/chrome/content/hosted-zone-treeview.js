@@ -115,8 +115,13 @@ HostedZoneTreeView.prototype = {
     return (idx != -1) ? this.printRows[idx] : null;
   },
 
-  showDetail: function() {
+  showDetail: function(event) {
     var row = this.selectedRow();
+
+    if (!row || (event && event.target.tagName != 'treechildren')) {
+      return;
+    }
+
     var hzid = this.hostedZoneId(row);
     var xhr = null;
 

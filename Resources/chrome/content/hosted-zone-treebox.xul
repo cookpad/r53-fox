@@ -11,7 +11,7 @@
   <!-- context menu -->
   <popupset>
     <menupopup id="hosted-zone-tree-contenx-menu">
-      <menuitem label="Detail" oncommand="$view.showDetail();" />
+      <menuitem label="Detail" class="bold" oncommand="$view.showDetail();" />
       <menuseparator />
       <menu label="Copy to Clipboard">
         <menupopup>
@@ -30,7 +30,7 @@
       <textbox id="hosted-zone-tree-filter" oninput="$view.invalidate();" />
       <button label="Clear" oncommand="with($('hosted-zone-tree-filter')) { value = ''; oninput(); }" />
     </hbox>
-    <tree id="hosted-zone-tree" seltype="single" enableColumnDrag="true" flex="1" ondblclick="this._view.onDblclick(event);">
+    <tree id="hosted-zone-tree" seltype="single" enableColumnDrag="true" flex="1" ondblclick="$view.showDetail(event);">
       <treecols>
         <treecol id="hosted-zone-tree.Id" label="ID" flex="1" persist="width ordinal hidden sortDirection" />
         <splitter class="tree-splitter" />
