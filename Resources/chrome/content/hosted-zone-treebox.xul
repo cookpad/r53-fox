@@ -13,6 +13,7 @@
     <menupopup id="hosted-zone-tree-contenx-menu">
       <menuitem label="Resource Records Sets" class="bold" oncommand="$view.openRRSet();" />
       <menuitem label="Detail" oncommand="$view.showDetail();" />
+      <!--
       <menuseparator />
       <menu label="Copy to Clipboard">
         <menupopup>
@@ -22,6 +23,7 @@
           <menuitem label="Comment" oncommand="$view.copyColumnToClipboard('Config.Comment')" />
         </menupopup>
       </menu>
+        -->
       <menuseparator />
       <menuitem label="Delete" oncommand="$view.deleteHostedZone()" />
     </menupopup>

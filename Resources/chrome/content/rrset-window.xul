@@ -18,7 +18,7 @@
     <menupopup id="rrset-tree-contenx-menu">
       <menuitem label="Detail" class="bold" oncommand="$view.showDetail()" />
       <menuseparator />
-      <menuitem label="Delete" oncommand="$view.deleteHostedZone()" />
+      <menuitem label="Delete" oncommand="$view.deleteRRSet()" />
     </menupopup>
   </popupset>
 

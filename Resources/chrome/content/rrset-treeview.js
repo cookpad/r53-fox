@@ -110,6 +110,8 @@ RRSetTreeView.prototype = {
       change.ResourceRecordSet.ResourceRecords.ResourceRecord += rr;
     }
 
+    alert(xml);
+
     $R53(function(r53cli) {
       r53cli.changeResourceRecordSets(this.hostedZoneId, '<?xml version="1.0" encoding="UTF-8"?>' + xml);
       this.refresh();
@@ -127,28 +129,45 @@ RRSetTreeView.prototype = {
   },
 
   deleteRRSet: function() {
+    try{
     var row = this.selectedRow();
     if (!row) { return; }
 
-    var hzid = this.hostedZoneId(row);
     var name = row.Name.toString();
 
     if (!confirm("Are you sure you want to delete '" + name + "' ?")) {
       return;
     }
 
+    var type = row.Type.toString();
+    var ttl = row.TTL.toString();
+    var values = [];
+
+    for each (var member in row..ResourceRecords.ResourceRecord) {
+      values.push(member.Value.toString());
+    }
+
+    var xml = <ChangeResourceRecordSetsRequest xmlns="https://route53.amazonaws.com/doc/2010-10-01/"></ChangeResourceRecordSetsRequest>;
+
+    // XXX:
+    //xml.ChangeBatch.Comment = ;
+
+    var change = xml.ChangeBatch.Changes.Change;
+    change.Action = 'DELETE';
+    change.ResourceRecordSet.Name = name;
+    change.ResourceRecordSet.Type = type;
+    change.ResourceRecordSet.TTL = ttl;
+
+    for (var i = 0; i < values.length; i ++) {
+      var rr = new XML('<ResourceRecord><Value>' + values[i] + '</Value></ResourceRecord>');
+      change.ResourceRecordSet.ResourceRecords.ResourceRecord += rr;
+    }
+
     $R53(function(r53cli) {
-      r53cli.deleteRRSet(hzid);
+      r53cli.changeResourceRecordSets(this.hostedZoneId, '<?xml version="1.0" encoding="UTF-8"?>' + xml);
       this.refresh();
-    }.bind(this), $('main-window-loader'));
-  },
-
-  openRRSet: function() {
-    var row = this.selectedRow();
-    if (!row) { return; }
-
-    var hzid = this.hostedZoneId(row);
-    openModalDialog('rrset-window');
+    }.bind(this), $('rrset-window-loader'));
+    }catch(e){alert(e)}
   },
 
   selectByName: function(name) {
@@ -169,11 +188,5 @@ RRSetTreeView.prototype = {
     if (row) {
       copyToClipboard($CELL(row, name, 0));
     }
-  },
-
-  hostedZoneId: function(row) {
-    var hzid = row.Id.toString();
-    hzid = hzid.split('/');
-    return hzid[hzid.length - 1];
   }
 };
