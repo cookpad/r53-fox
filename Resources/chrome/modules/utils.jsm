@@ -17,7 +17,7 @@ function openModalDialog(window, name, features) {
     features = 'chrome,modal,centerscreen';
   }
 
-  var retval = {accepted:false, result:null};
+  var retval = {};
 
   window.openDialog('chrome://r53fox/content/' + name + '.xul', name, features, retval);
 
