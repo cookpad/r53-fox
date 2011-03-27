@@ -15,11 +15,10 @@
       <menuseparator />
       <menu label="Copy to Clipboard">
         <menupopup>
-          <menuitem label="XXX" oncommand="$view.copyColumnToClipboard('Id')" />
-          <menuitem label="XXX" oncommand="" />
-          <menuitem label="XXX" oncommand="" />
-          <menuitem label="XXX" oncommand="" />
-          <menuitem label="XXX" oncommand="" />
+          <menuitem label="ID" oncommand="$view.copyColumnToClipboard('Id')" />
+          <menuitem label="Name" oncommand="$view.copyColumnToClipboard('Name')" />
+          <menuitem label="Caller Reference" oncommand="$view.copyColumnToClipboard('CallerReference')" />
+          <menuitem label="Comment" oncommand="$view.copyColumnToClipboard('Config.Comment')" />
         </menupopup>
       </menu>
       <menuseparator />
@@ -40,7 +39,7 @@
         <splitter class="tree-splitter" />
         <treecol id="hosted-zone-tree.Name" label="Name" flex="1" persist="width ordinal hidden sortDirection" />
         <splitter class="tree-splitter" />
-        <treecol id="hosted-zone-tree.Caller Reference" label="CallerReference" flex="1" persist="width ordinal hidden sortDirection" />
+        <treecol id="hosted-zone-tree.CallerReference" label="Caller Reference" flex="1" persist="width ordinal hidden sortDirection" />
         <splitter class="tree-splitter" />
         <treecol id="hosted-zone-tree.Config.Comment" label="Comment" flex="1" persist="width ordinal hidden sortDirection" />
       </treecols>
