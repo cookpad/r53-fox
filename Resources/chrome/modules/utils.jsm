@@ -6,7 +6,8 @@ var EXPORTED_SYMBOLS = [
   'sortRowsByColumn',
   'openModalDialog',
   'copyToClipboard',
-  'openURL'
+  'openURL',
+  'beep'
   ];
 
 Components.utils.import('resource://r53fox/r53-client.jsm');
@@ -59,13 +60,13 @@ function $R53(callback, loader, self) {
     };
   }
 
-  var window_alert = this.alert;
+  var self = this;
 
   return protect(callback_with_client, function(e) {
     if (typeof(e) == 'xml') {
-      window_alert('[XML]\n' + e);
+      openModalDialog.call(self, 'error-dialog', {error:(e..Error)});
     } else {
-      window_alert(e);
+      self.alert(e);
     }
   });
 }
@@ -157,6 +158,11 @@ function sortRowsByColumn(column, rows) {
   }
 
   column.element.setAttribute('sortDirection', sortDirection);
+}
+
+function beep() {
+  var sound = Components.classes["@mozilla.org/sound;1"].createInstance(Components.interfaces.nsISound);
+  sound.beep();
 }
 
 // private

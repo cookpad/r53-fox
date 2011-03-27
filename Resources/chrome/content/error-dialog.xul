@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+<?xml-stylesheet href="chrome://r53fox/skin/" type="text/css"?>
+<!DOCTYPE window SYSTEM "chrome://r53fox/locale/r53fox.dtd">
+
+<dialog xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+  title="Error"
+  buttons="accept"
+  buttonlabelaccept="Close"
+  ondialogaccept="return true;"
+  onload="onLoad();"
+  width="400" height="300">
+
+  <!-- scripts -->
+  <script src="error-dialog.js" />
+
+  <!-- inputs -->
+  <label control="errpr-dialog-type" value="Type" />
+  <textbox id="errpr-dialog-type" readonly="true" />
+  <label control="errpr-dialog-code" value="Code" />
+  <textbox id="errpr-dialog-code" readonly="true" />
+  <label control="errpr-dialog-message" value="Message" />
+  <textbox id="errpr-dialog-message" readonly="true" multiline="true" flex="1" />
+</dialog>
