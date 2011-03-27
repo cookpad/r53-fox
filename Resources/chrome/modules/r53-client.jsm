@@ -199,7 +199,7 @@ R53Client.prototype = {
 
   url: function() {
     var base = 'https://' + this.HOST + '/' + this.API_VERSION + '/';
-    return base + Array.prototype.join.apply(arguments, ['/']);
+    return base + Array.prototype.join.call(arguments, '/');
   }
 }
 
