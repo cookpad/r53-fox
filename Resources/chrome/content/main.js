@@ -8,17 +8,6 @@ function onLoad() {
   $view.refresh();
 }
 
-function example() {
-  try {
-    $R53(function(r53cli) {
-      var xhr = r53cli.listHostedZones();
-      alert(xhr.xml());
-    }, $('main-window-loader'));
-  } catch (e) {
-    alert(e);
-  }
-}
-
 function editAccount() {
   var result = openModalDialog('account-dialog');
 
@@ -27,4 +16,8 @@ function editAccount() {
     Prefs.secretAccessKey = result.secretAccessKey;
     $view.refresh();
   }
+}
+
+function about() {
+  openModalDialog('about-dialog');
 }

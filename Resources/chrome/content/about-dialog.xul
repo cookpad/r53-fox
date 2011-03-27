@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+<?xml-stylesheet href="chrome://r53fox/skin/" type="text/css"?>
+<!DOCTYPE window SYSTEM "chrome://r53fox/locale/r53fox.dtd">
+
+<dialog xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+  title="About"
+  buttons="accept"
+  buttonlabelaccept="Close"
+  ondialogaccept="return true;"
+  onload="onLoad();">
+
+  <!-- scripts -->
+  <script src="about-dialog.js" />
+
+  <!-- inputs -->
+  <vbox>
+    <hbox align="center">
+      <image  src="about.png" />
+      <separator style="width:10px;" />
+      <textnode style="font-weight:bold;">R53 Fox</textnode>
+      <separator style="width:5px;" />
+      <textnode>version 0.1.0</textnode>
+    </hbox>
+    <vbox style="margin:5px;">
+      <textnode>Developer: SUGAWARA Genki</textnode>
+      <textnode class="text-link" onclick="openURL('https://bitbucket.org/winebarrel/r53-fox');">https://bitbucket.org/winebarrel/r53-fox</textnode>
+    </vbox>
+  </vbox>
+</dialog>

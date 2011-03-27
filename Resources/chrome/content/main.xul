@@ -16,13 +16,12 @@
     <menubar>
       <menu label="File">
         <menupopup>
-          <menuitem label="Example" oncommand="example();" />
           <menuitem label="Exit" oncommand="window.close();" />
         </menupopup>
       </menu>
       <menu label="Help">
         <menupopup>
-          <menuitem label="About" oncommand="alert('R53 Fox 0.1.0')" />
+          <menuitem label="About" oncommand="about()" />
         </menupopup>
       </menu>
     </menubar>
