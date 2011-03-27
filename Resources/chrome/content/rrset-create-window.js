@@ -6,7 +6,6 @@ function onLoad() {
 }
 
 function onAccept() {
-  try{
   var args = window.arguments[0];
 
   var name = $V('rrset-create-window-name');
@@ -24,5 +23,4 @@ function onAccept() {
   args.result = {name:name, type:type, ttl:ttl, value:value, comment:comment};
 
   close();
-  }catch(e){alert(e);}
 }

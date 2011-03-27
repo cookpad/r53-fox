@@ -110,8 +110,6 @@ RRSetTreeView.prototype = {
       change.ResourceRecordSet.ResourceRecords.ResourceRecord += rr;
     }
 
-    alert(xml);
-
     $R53(function(r53cli) {
       r53cli.changeResourceRecordSets(this.hostedZoneId, '<?xml version="1.0" encoding="UTF-8"?>' + xml);
       this.refresh();
@@ -129,7 +127,6 @@ RRSetTreeView.prototype = {
   },
 
   deleteRRSet: function() {
-    try{
     var row = this.selectedRow();
     if (!row) { return; }
 
@@ -167,7 +164,6 @@ RRSetTreeView.prototype = {
       r53cli.changeResourceRecordSets(this.hostedZoneId, '<?xml version="1.0" encoding="UTF-8"?>' + xml);
       this.refresh();
     }.bind(this), $('rrset-window-loader'));
-    }catch(e){alert(e)}
   },
 
   selectByName: function(name) {
