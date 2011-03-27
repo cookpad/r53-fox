@@ -1,2 +1,2 @@
 pref('r53fox.accessKeyId', '');
-pref('r53fox.ssecretAccessKey', '');
+pref('r53fox.secretAccessKey', '');
