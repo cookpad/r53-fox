@@ -1,0 +1,63 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+<?xml-stylesheet href="chrome://r53fox/skin/" type="text/css"?>
+<!DOCTYPE window SYSTEM "chrome://r53fox/locale/r53fox.dtd">
+
+<window  xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+  id="rrset-detail-window" title="Create Resource Record Set" onload="onLoad();"
+  width="500" height="300">
+
+  <!-- scripts -->
+  <script src="global.js" />
+  <script src="rrset-create-window.js" />
+
+  <!-- body -->
+  <vbox class="content" flex="1">
+    <grid>
+      <columns flex="1">
+        <column flex="1" />
+        <column flex="4" />
+      </columns>
+      <rows>
+        <row>
+          <label control="rrset-create-window-name" value="Name" />
+          <textbox id="rrset-create-window-name" />
+        </row>
+        <row>
+          <label control="rrset-create-window-type" value="Type" />
+          <menulist id="rrset-create-window-type">
+            <menupopup>
+              <menuitem label="A" value="A" />
+              <menuitem label="AAAA" value="AAAA" />
+              <menuitem label="CNAME" value="CNAME" />
+              <menuitem label="MX" value="MX" />
+              <menuitem label="NS" value="NS" />
+              <menuitem label="PTR" value="PTR" />
+              <menuitem label="SOA" value="SOA" />
+              <menuitem label="SPF" value="SPF" />
+              <menuitem label="SRV" value="SRV" />
+              <menuitem label="TXT" value="TXT"/>
+            </menupopup>
+          </menulist>
+        </row>
+        <row>
+          <label control="rrset-create-window-ttl" value="TTL" />
+          <textbox id="rrset-create-window-ttl" />
+        </row>
+        <row flex="1">
+          <label control="rrset-create-window-value" value="Value" />
+          <textbox id="rrset-create-window-value" multiline="true" wrap="off" flex="1" />
+        </row>
+        <row>
+          <label control="rrset-create-window-comment" value="Comment" />
+          <textbox id="rrset-create-window-comment" />
+        </row>
+      </rows>
+    </grid>
+    <hbox>
+      <spacer flex="1" />
+      <button label="OK" oncommand="onAccept();" />
+      <button label="Cancel" oncommand="close();" />
+    </hbox>
+  </vbox>
+</window>

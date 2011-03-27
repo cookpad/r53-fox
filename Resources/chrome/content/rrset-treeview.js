@@ -1,5 +1,6 @@
-function RRSetTreeView(hostedZoneId) {
+function RRSetTreeView(hostedZoneId, hostedZoneName) {
   this.hostedZoneId = hostedZoneId;
+  this.hostedZoneName = hostedZoneName;
   this.rows = [];
   this.printRows = [];
   this.rowCount = 0;
@@ -87,21 +88,32 @@ RRSetTreeView.prototype = {
   },
 
   createRRSet: function() {
-    var result = openModalDialog('rrset-create-window');
+    var result = openModalDialog('rrset-create-window', {hostedZoneName:this.hostedZoneName});
     if (!result) { return; }
 
-    var xml = <CreateRRSetRequest xmlns="https://route53.amazonaws.com/doc/2010-10-01/"></CreateRRSetRequest>;
-    xml.Name = result.name;
-    xml.CallerReference = result.callerReference;
+    var xml = <ChangeResourceRecordSetsRequest xmlns="https://route53.amazonaws.com/doc/2010-10-01/"></ChangeResourceRecordSetsRequest>;
 
     if (result.comment) {
-      xml.RRSetConfig.Comment = result.comment;
+      xml.ChangeBatch.Comment = result.comment;
+    }
+
+    var change = xml.ChangeBatch.Changes.Change;
+    change.Action = 'CREATE';
+    change.ResourceRecordSet.Name = result.name;
+    change.ResourceRecordSet.Type = result.type;
+    change.ResourceRecordSet.TTL = result.ttl;
+
+    var values = result.value.split(/\n+/);
+
+    for (var i = 0; i < values.length; i ++) {
+      var rr = new XML('<ResourceRecord><Value>' + values[i] + '</Value></ResourceRecord>');
+      change.ResourceRecordSet.ResourceRecords.ResourceRecord += rr;
     }
 
     $R53(function(r53cli) {
-      r53cli.createRRSet('<?xml version="1.0" encoding="UTF-8"?>' + xml);
+      r53cli.changeResourceRecordSets(this.hostedZoneId, '<?xml version="1.0" encoding="UTF-8"?>' + xml);
       this.refresh();
-    }.bind(this), $('main-window-loader'));
+    }.bind(this), $('rrset-window-loader'));
   },
 
   showDetail: function(event) {
