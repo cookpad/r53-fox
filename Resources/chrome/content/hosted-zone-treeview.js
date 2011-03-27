@@ -97,19 +97,17 @@ HostedZoneTreeView.prototype = {
   },
 
   refresh: function() {
-    try {
-      $R53(function(r53cli) {
-        var xhr = r53cli.listHostedZones();
+    $R53(function(r53cli) {
+      var xhr = r53cli.listHostedZones();
 
-        for each (var member in xhr.xml()..HostedZones.HostedZone) {
-          this.rows.push(member);
-        }
+      this.rows.length = 0;
 
-        this.invalidate();
-      }, $('main-window-loader'), this);
-    } catch (e) {
-      alert(e);
-    }
+      for each (var member in xhr.xml()..HostedZones.HostedZone) {
+        this.rows.push(member);
+      }
+
+      this.invalidate();
+    }, $('main-window-loader'), this);
     /*
     this.rows.length = 0;
 
