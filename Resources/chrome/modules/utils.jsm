@@ -111,16 +111,22 @@ function openURL(url) {
   launcher.launchWithURI(uri, null);
 }
 
-function $CELL(row, netedId) {
+function $CELL(row, netedId, depth) {
   netedId = netedId.toString();
+
+  if (depth != 0 && !depth) {
+    depth = 1;
+  }
 
   var keys = netedId.split('.');
 
-  if (keys.length < 2) {
-    return null;
+  for (var i = 0; i < depth; i++) {
+    keys.shift();
   }
 
-  keys.shift();
+  if (keys.length == 0) {
+    return null;
+  }
 
   for (var i = 0; i < keys.length; i++) {
     var key = keys[i];

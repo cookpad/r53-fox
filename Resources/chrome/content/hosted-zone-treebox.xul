@@ -15,6 +15,10 @@
       <menuseparator />
       <menu label="Copy to Clipboard">
         <menupopup>
+          <menuitem label="XXX" oncommand="$view.copyColumnToClipboard('Id')" />
+          <menuitem label="XXX" oncommand="" />
+          <menuitem label="XXX" oncommand="" />
+          <menuitem label="XXX" oncommand="" />
           <menuitem label="XXX" oncommand="" />
         </menupopup>
       </menu>

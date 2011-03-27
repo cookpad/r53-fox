@@ -245,14 +245,18 @@ HostedZoneTreeView.prototype = {
     }.bind(this));
   },
 
+    */
   copyColumnToClipboard: function(name) {
+    try {
     var row = this.selectedRow();
 
     if (row) {
-      copyToClipboard(row[name].toString());
+      copyToClipboard($CELL(row, name, 0));
     }
-  }
-    */
+    }catch (e) {
+      alert(e);
+    }
+  },
 
   hostedZoneId: function(row) {
     var hzid = row.Id.toString();
