@@ -18,7 +18,7 @@ function $(element) {
 }
 
 function $V(element) {
-  return ($.apply(this, [element]).value || '').trim();
+  return ($.call(this, element).value || '').trim();
 }
 
 function $R53(callback, loader, self) {
