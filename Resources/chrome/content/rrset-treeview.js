@@ -1,3 +1,5 @@
+Components.utils.import('resource://r53fox/preferences.jsm');
+
 function RRSetTreeView(hostedZoneId, hostedZoneName) {
   this.hostedZoneId = hostedZoneId;
   this.hostedZoneName = hostedZoneName;
@@ -112,7 +114,13 @@ RRSetTreeView.prototype = {
     }
 
     $R53(function(r53cli) {
-      r53cli.changeResourceRecordSets(this.hostedZoneId, '<?xml version="1.0" encoding="UTF-8"?>' + xml);
+      var xhr = r53cli.changeResourceRecordSets(this.hostedZoneId, '<?xml version="1.0" encoding="UTF-8"?>' + xml);
+
+      var chid = xhr.xml()..ChangeInfo.Id.toString();
+      chid = chid.split('/');
+      chid = chid[chid.length - 1];
+      Prefs.addChangeId(this.hostedZoneId, chid);
+
       this.refresh();
     }.bind(this), $('rrset-window-loader'));
   },

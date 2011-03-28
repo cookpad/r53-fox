@@ -30,11 +30,12 @@ var Prefs = {
     return changeIds[hzid];
   },
 
-  addChangeId: function(hzid, chaid) {
+  addChangeId: function(hzid, chid) {
     chid = chid.toString();
     var changeIds = prefs.getCharPref('changeIds');
     changeIds = eval(changeIds);
-    changeIds.push(chid);
+    if (!changeIds[hzid]) { changeIds[hzid] = []; }
+    changeIds[hzid].push(chid);
     prefs.setCharPref('changeIds', changeIds.toSource());
   }
 };
