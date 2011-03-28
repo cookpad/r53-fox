@@ -5,7 +5,7 @@
 
 <window  xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
   id="rrset-detail-window" title="Create Resource Record Set" onload="onLoad();"
-  width="500" height="300">
+  width="500" height="400">
 
   <!-- scripts -->
   <script src="global.js" />
@@ -13,7 +13,7 @@
 
   <!-- body -->
   <vbox class="content" flex="1">
-    <grid>
+    <grid flex="1">
       <columns flex="1">
         <column flex="1" />
         <column flex="4" />
@@ -50,7 +50,7 @@
         </row>
         <row>
           <label control="rrset-create-window-comment" value="Comment" />
-          <textbox id="rrset-create-window-comment" />
+          <textbox id="rrset-create-window-comment" multiline="true" row="2" />
         </row>
       </rows>
     </grid>
