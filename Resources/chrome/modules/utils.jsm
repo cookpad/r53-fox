@@ -72,21 +72,26 @@ function $R53(callback, loader, self) {
 }
 
 function openModalDialog(name, args, features) {
-  features = (features || []);
-  var default_features = {chrome:1, modal:1, 'dialog=no':1, resizable:1, centerscreen:1};
+  features = (features || '').trim();
+  features = features ? features.split(/\s*,\s*/) : [];
+
+  var default_features = {chrome:0, modal:0, dialog:'no', resizable:0, centerscreen:0};
 
   for (var i = 0; i < features.length; i++) {
     var feature = features[i];
-    default_features[features] = 1;
+    feature = feature.split(/=/, 2);
+    default_features[feature[0]] = feature[1];
   }
 
   features = [];
 
-  for (var i in default_features) {
-    features.push(i);
+  for (var key in default_features) {
+    var value = default_features[key];
+    features.push(value ? [key, value].join('=') : key);
   }
 
   features = features.join(',');
+  this.alert(features);
 
   var h = {accepted:false, result:null};
 
