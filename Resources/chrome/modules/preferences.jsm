@@ -22,5 +22,19 @@ var Prefs = {
   set secretAccessKey(v) {
     v = (v || '').toString().trim();
     prefs.setCharPref('secretAccessKey', v);
+  },
+
+  getChangeIds: function(hzid) {
+    var changeIds = prefs.getCharPref('changeIds');
+    changeIds = eval(changeIds);
+    return changeIds[hzid];
+  },
+
+  addChangeId: function(hzid, chaid) {
+    chid = chid.toString();
+    var changeIds = prefs.getCharPref('changeIds');
+    changeIds = eval(changeIds);
+    changeIds.push(chid);
+    prefs.setCharPref('changeIds', changeIds.toSource());
   }
 };
