@@ -72,9 +72,21 @@ function $R53(callback, loader, self) {
 }
 
 function openModalDialog(name, args, features) {
-  if (!features) {
-    features = 'chrome,modal,chrome,dialog=no,resizabl,centerscreen';
+  features = (features || []);
+  var default_features = {chrome:1, modal:1, 'dialog=no':1, resizable:1, centerscreen:1};
+
+  for (var i = 0; i < features.length; i++) {
+    var feature = features[i];
+    default_features[features] = 1;
   }
+
+  features = [];
+
+  for (var i in default_features) {
+    features.push(i);
+  }
+
+  features = features.join(',');
 
   var h = {accepted:false, result:null};
 
