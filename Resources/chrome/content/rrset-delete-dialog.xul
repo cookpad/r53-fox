@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+<?xml-stylesheet href="chrome://r53fox/skin/" type="text/css"?>
+<!DOCTYPE window SYSTEM "chrome://r53fox/locale/r53fox.dtd">
+
+<dialog xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+  title="Delete Resource Record Set"
+  buttons="accept,cancel"
+  ondialogaccept="return onDialogAccept();"
+  ondialogcancel="return true;"
+  onload="onLoad();"
+  width="350" height="250">
+
+  <!-- scripts -->
+  <script src="rrset-delete-dialog.js" />
+
+  <!-- inputs -->
+  <vbox flex="1">
+    <description class="header">
+      Are you sure you want to delete ?
+    </description>
+    <label control="rrset-delete-dialog-comment" value="Comment (option)" />
+    <textbox id="rrset-delete-dialog-comment" multiline="true" flex="1" />
+  </vbox>
+</dialog>

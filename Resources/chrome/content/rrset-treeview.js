@@ -150,13 +150,13 @@ RRSetTreeView.prototype = {
 
     var name = row.Name.toString();
 
-    if (!confirm("Are you sure you want to delete '" + name + "' ?")) {
-      return;
-    }
+    var result = openModalDialog('rrset-delete-dialog', {name:name}); // XXX:
+    if (!result) { return; }
 
     var type = row.Type.toString();
     var ttl = row.TTL.toString();
     var values = [];
+    var comment = result.comment;
 
     for each (var member in row..ResourceRecords.ResourceRecord) {
       values.push(member.Value.toString());
@@ -164,8 +164,9 @@ RRSetTreeView.prototype = {
 
     var xml = <ChangeResourceRecordSetsRequest xmlns="https://route53.amazonaws.com/doc/2010-10-01/"></ChangeResourceRecordSetsRequest>;
 
-    // XXX:
-    //xml.ChangeBatch.Comment = ;
+    if (comment) {
+      xml.ChangeBatch.Comment = comment;
+    }
 
     var change = xml.ChangeBatch.Changes.Change;
     change.Action = 'DELETE';
