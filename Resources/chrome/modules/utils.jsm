@@ -91,7 +91,6 @@ function openModalDialog(name, args, features) {
   }
 
   features = features.join(',');
-  this.alert(features);
 
   var h = {accepted:false, result:null};
 
