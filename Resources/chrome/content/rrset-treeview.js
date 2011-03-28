@@ -106,7 +106,8 @@ RRSetTreeView.prototype = {
     var values = result.value.split(/\n+/);
 
     for (var i = 0; i < values.length; i ++) {
-      var rr = new XML('<ResourceRecord><Value>' + values[i] + '</Value></ResourceRecord>');
+      var rr = new XML('<ResourceRecord></ResourceRecord>');
+      rr.Value = values[i];
       change.ResourceRecordSet.ResourceRecords.ResourceRecord += rr;
     }
 
@@ -156,7 +157,8 @@ RRSetTreeView.prototype = {
     change.ResourceRecordSet.TTL = ttl;
 
     for (var i = 0; i < values.length; i ++) {
-      var rr = new XML('<ResourceRecord><Value>' + values[i] + '</Value></ResourceRecord>');
+      var rr = new XML('<ResourceRecord></ResourceRecord>');
+      rr.Value = values[i];
       change.ResourceRecordSet.ResourceRecords.ResourceRecord += rr;
     }
 
