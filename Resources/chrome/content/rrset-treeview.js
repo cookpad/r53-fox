@@ -150,7 +150,7 @@ RRSetTreeView.prototype = {
 
     var name = row.Name.toString();
 
-    var result = openModalDialog('rrset-delete-dialog', {name:name}, 'dialog=yes');
+    var result = openModalDialog('rrset-delete-dialog', {name:name});
     if (!result) { return; }
 
     var type = row.Type.toString();
