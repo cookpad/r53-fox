@@ -117,19 +117,21 @@ RRSetTreeView.prototype = {
       change.ResourceRecordSet.ResourceRecords.ResourceRecord += rr;
     }
 
-    $R53(function(r53cli) {
-      var xhr = r53cli.changeResourceRecordSets(this.hostedZoneId, '<?xml version="1.0" encoding="UTF-8"?>' + xml);
+    var xhr = null;
 
+    $R53(function(r53cli) {
+      xhr = r53cli.changeResourceRecordSets(this.hostedZoneId, '<?xml version="1.0" encoding="UTF-8"?>' + xml);
+    }.bind(this), $('rrset-window-loader'));
+
+    if (xhr && xhr.success()) {
       var changeInfo = xhr.xml()..ChangeInfo;
       var chid = changeInfo.Id.toString();
       chid = chid.split('/');
       chid = chid[chid.length - 1];
       Prefs.addChangeId(this.hostedZoneId, chid, changeInfo.SubmittedAt);
-
       openModalDialog('change-info-detail-window', {changeInfo:changeInfo});
-
       this.refresh();
-    }.bind(this), $('rrset-window-loader'));
+    }
   },
 
   showDetail: function(event) {
@@ -177,19 +179,21 @@ RRSetTreeView.prototype = {
       change.ResourceRecordSet.ResourceRecords.ResourceRecord += rr;
     }
 
-    $R53(function(r53cli) {
-      var xhr = r53cli.changeResourceRecordSets(this.hostedZoneId, '<?xml version="1.0" encoding="UTF-8"?>' + xml);
+    var xhr = null;
 
+    $R53(function(r53cli) {
+      xhr = r53cli.changeResourceRecordSets(this.hostedZoneId, '<?xml version="1.0" encoding="UTF-8"?>' + xml);
+    }.bind(this), $('rrset-window-loader'));
+
+    if (xhr && xhr.success()) {
       var changeInfo = xhr.xml()..ChangeInfo;
       var chid = changeInfo.Id.toString();
       chid = chid.split('/');
       chid = chid[chid.length - 1];
       Prefs.addChangeId(this.hostedZoneId, chid, changeInfo.SubmittedAt);
-
       openModalDialog('change-info-detail-window', {changeInfo:changeInfo});
-
       this.refresh();
-    }.bind(this), $('rrset-window-loader'));
+    }
   },
 
   showChangeInfo: function() {
