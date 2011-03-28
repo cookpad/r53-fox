@@ -1,4 +1,3 @@
-Components.utils.import('resource://r53fox/sha1.jsm');
 Components.utils.import('resource://r53fox/utils.jsm');
 
 function onAccept() {
@@ -23,7 +22,5 @@ function inputCallerReference() {
   var name = $V('hosted-zone-create-window-name');
   var cre = $('hosted-zone-create-window-caller-reference');
   if ((cre.value || '').trim() || !name) { return; }
-
-  var seed = ['CreateHostedZone', name, (new Date()).toString()].join(', ');
-  cre.value = seed + ', ' +  b64_sha1(seed);
+  cre.value = ['CreateHostedZone', name, (new Date()).toString()].join(', ');
 }
