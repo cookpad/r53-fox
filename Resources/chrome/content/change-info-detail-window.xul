@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+<?xml-stylesheet href="chrome://r53fox/skin/" type="text/css"?>
+<!DOCTYPE window SYSTEM "chrome://r53fox/locale/r53fox.dtd">
+
+<window  xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+  id="change-info-detail-window" title="Change Info" onload="onLoad();">
+
+  <!-- scripts -->
+  <script src="global.js" />
+  <script src="change-info-detail-window.js" />
+
+  <!-- body -->
+  <vbox class="content" flex="1">
+    <grid flex="1">
+      <columns>
+        <column flex="1" />
+        <column flex="4" />
+      </columns>
+      <rows>
+        <row>
+          <label control="change-info-detail-window-id" value="ID" />
+          <textbox id="change-info-detail-window-id" readonly="true" />
+        </row>
+        <row>
+          <label control="change-info-detail-window-status" value="Status" />
+          <textbox id="change-info-detail-window-status" readonly="true" />
+        </row>
+        <row>
+          <label control="change-info-detail-window-submitted-at" value="Submitted At" />
+          <textbox id="change-info-detail-window-submitted-at" readonly="true" />
+        </row>
+      </rows>
+    </grid>
+    <hbox>
+      <spacer flex="1" />
+      <button label="OK" oncommand="close();" />
+    </hbox>
+  </vbox>
+</window>

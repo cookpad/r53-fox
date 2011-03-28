@@ -81,6 +81,10 @@ RRSetTreeView.prototype = {
       }
     }.bind(this), $('rrset-window-loader'));
 
+    var chageInfoButton = $('rrset-window-change-info-button');
+    var changeIds = Prefs.getChangeIds(this.hostedZoneId);
+    chageInfoButton.disabled = ((changeIds || []).length == 0);
+
     this.invalidate();
   },
 
@@ -132,7 +136,7 @@ RRSetTreeView.prototype = {
       return;
     }
 
-    openModalDialog('rrset-detail-window', {resourceRecordSet: row});
+    openModalDialog('rrset-detail-window', {resourceRecordSet:row});
   },
 
   deleteRRSet: function() {
@@ -180,6 +184,28 @@ RRSetTreeView.prototype = {
 
       this.refresh();
     }.bind(this), $('rrset-window-loader'));
+  },
+
+  showChangeInfo: function() {
+    var changeIds = Prefs.getChangeIds(this.hostedZoneId);
+
+    if ((changeIds || []).length == 0) {
+      alert('Cannot find Change Info.');
+      return;
+    }
+
+    var result = openModalDialog('change-info-window', {changeIds:changeIds});
+    if (!result) { return; }
+
+    var xhr = null;
+
+    $R53(function(r53cli) {
+      xhr = r53cli.getChange(result.changeId);
+    }.bind(this), $('rrset-window-loader'));
+
+    if (xhr && xhr.success()) {
+      openModalDialog('change-info-detail-window', {changeInfo:(xhr.xml()..ChangeInfo)});
+    }
   },
 
   selectByName: function(name) {

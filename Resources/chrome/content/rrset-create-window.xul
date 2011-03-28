@@ -4,7 +4,7 @@
 <!DOCTYPE window SYSTEM "chrome://r53fox/locale/r53fox.dtd">
 
 <window  xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
-  id="rrset-detail-window" title="Create Resource Record Set" onload="onLoad();"
+  id="rrset-create-window" title="Create Resource Record Set" onload="onLoad();"
   width="500" height="400">
 
   <!-- scripts -->

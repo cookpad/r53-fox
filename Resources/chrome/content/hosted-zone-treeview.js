@@ -115,7 +115,7 @@ HostedZoneTreeView.prototype = {
     }, $('main-window-loader'));
 
     if (xhr && xhr.success()) {
-      openModalDialog('hosted-zone-detail-window', {xml: xhr.xml()});
+      openModalDialog('hosted-zone-detail-window', {xml:xhr.xml()});
     }
   },
 

@@ -42,6 +42,7 @@
 
     <hbox>
       <button label="Create" oncommand="$view.createRRSet();" />
+      <button label="Change Info" id="rrset-window-change-info-button" disabled="true" oncommand="$view.showChangeInfo();" />
       <button label="Refresh" oncommand="$view.refresh();" />
       <spacer flex="1" />
       <button label="Close" oncommand="close();" />
