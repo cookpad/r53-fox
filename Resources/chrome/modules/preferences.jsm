@@ -30,12 +30,13 @@ var Prefs = {
     return changeIds[hzid];
   },
 
-  addChangeId: function(hzid, chid) {
+  addChangeId: function(hzid, chid, date) {
     chid = chid.toString();
+    date = date.toString();
     var changeIds = prefs.getCharPref('changeIds');
     changeIds = eval(changeIds);
     if (!changeIds[hzid]) { changeIds[hzid] = []; }
-    changeIds[hzid].push(chid);
+    changeIds[hzid].push([chid, date]);
     prefs.setCharPref('changeIds', changeIds.toSource());
   }
 };

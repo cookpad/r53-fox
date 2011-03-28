@@ -120,10 +120,13 @@ RRSetTreeView.prototype = {
     $R53(function(r53cli) {
       var xhr = r53cli.changeResourceRecordSets(this.hostedZoneId, '<?xml version="1.0" encoding="UTF-8"?>' + xml);
 
-      var chid = xhr.xml()..ChangeInfo.Id.toString();
+      var changeInfo = xhr.xml()..ChangeInfo;
+      var chid = changeInfo.Id.toString();
       chid = chid.split('/');
       chid = chid[chid.length - 1];
-      Prefs.addChangeId(this.hostedZoneId, chid);
+      Prefs.addChangeId(this.hostedZoneId, chid, changeInfo.SubmittedAt);
+
+      openModalDialog('change-info-detail-window', {changeInfo:changeInfo});
 
       this.refresh();
     }.bind(this), $('rrset-window-loader'));
@@ -177,10 +180,13 @@ RRSetTreeView.prototype = {
     $R53(function(r53cli) {
       var xhr = r53cli.changeResourceRecordSets(this.hostedZoneId, '<?xml version="1.0" encoding="UTF-8"?>' + xml);
 
-      var chid = xhr.xml()..ChangeInfo.Id.toString();
+      var changeInfo = xhr.xml()..ChangeInfo;
+      var chid = changeInfo.Id.toString();
       chid = chid.split('/');
       chid = chid[chid.length - 1];
-      Prefs.addChangeId(this.hostedZoneId, chid);
+      Prefs.addChangeId(this.hostedZoneId, chid, changeInfo.SubmittedAt);
+
+      openModalDialog('change-info-detail-window', {changeInfo:changeInfo});
 
       this.refresh();
     }.bind(this), $('rrset-window-loader'));

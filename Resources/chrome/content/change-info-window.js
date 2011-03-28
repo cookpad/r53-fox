@@ -7,8 +7,10 @@ function onLoad() {
   var menulist = $('change-info-window-change-id');
 
   for (var i = 0; i < changeIds.length; i++) {
-    var chid = changeIds[i];
-    menulist.appendItem(chid, chid);
+    var chid_date = changeIds[i];
+    var chid = chid_date[0];
+    var date = chid_date[1];
+    menulist.appendItem(chid + ' - ' + date, chid);
   }
 
   menulist.selectedIndex = 0;
