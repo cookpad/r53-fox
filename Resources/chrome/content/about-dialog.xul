@@ -39,10 +39,11 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
       <separator style="width:10px;" />
       <textnode style="font-weight:bold;">R53 Fox</textnode>
       <separator style="width:5px;" />
-      <textnode>version 0.1.1-1</textnode>
+      <textnode>version 0.1.2</textnode>
     </hbox>
     <vbox style="margin:5px;">
       <textnode>Developer: SUGAWARA Genki</textnode>
+      <textnode>License: GPL version  2</textnode>
       <textnode class="text-link" onclick="openURL('https://bitbucket.org/winebarrel/r53-fox');">https://bitbucket.org/winebarrel/r53-fox</textnode>
     </vbox>
   </vbox>
