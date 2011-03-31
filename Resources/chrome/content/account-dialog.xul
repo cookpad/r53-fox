@@ -18,4 +18,11 @@
   <textbox id="account-dialog-access-key-id"/>
   <label control="account-dialog-secret-access-key" value="AWS Secret Access Key" />
   <textbox id="account-dialog-secret-access-key" type="password" />
+  <groupbox orient="horizontal">
+    <caption label="Algorithm" />
+    <radiogroup id="account-dialog-algorythm">
+      <radio label="HmacSHA1" value="HmacSHA1" />
+      <radio label="HmacSHA256" value="HmacSHA256" />
+    </radiogroup>
+  </groupbox>
 </dialog>

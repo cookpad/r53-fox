@@ -1,14 +1,32 @@
 var EXPORTED_SYMBOLS = ['R53Client'];
 
 Components.utils.import('resource://r53fox/sha1.jsm');
+Components.utils.import('resource://r53fox/base64.jsm');
+Components.utils.import('resource://r53fox/jssha256.jsm');
 
 var window = Components.classes["@mozilla.org/appshell/appShellService;1"].getService(Components.interfaces.nsIAppShellService).hiddenDOMWindow;
 var XMLHttpRequest = window.XMLHttpRequest;
 
+// sha256 encoding function
+function b64_hmac_sha256(key, data) {
+  HMAC_SHA256_init(key);
+  HMAC_SHA256_write(data);
+  var ary = HMAC_SHA256_finalize();
+
+  var str = '';
+
+  for (var i = 0; i < ary.length; i++) {
+    str += String.fromCharCode(ary[i]);
+  }
+
+  return rstr2b64(str);
+}
+
 // classs R53Client
-function R53Client(accessKeyId, secretAccessKey) {
+function R53Client(accessKeyId, secretAccessKey, algorythm) {
   this.accessKeyId = accessKeyId;
   this.secretAccessKey = secretAccessKey;
+  this.algorythm = algorythm;
 }
 
 R53Client.prototype = {
@@ -149,11 +167,19 @@ R53Client.prototype = {
   }, // query
 
   xAmznAuthorization: function(date) {
-    var signature = b64_hmac_sha1(this.secretAccessKey, date);
+    var signature = null;
+
+    if (this.algorythm == 'HmacSHA1') {
+      signature = b64_hmac_sha1(this.secretAccessKey, date);
+    } else {
+      signature = b64_hmac_sha256(this.secretAccessKey, date);
+    }
+
+    window.alert(signature);
 
     var params = [
       'AWSAccessKeyId=' + this.accessKeyId,
-      'Algorithm=HmacSHA1',
+      'Algorithm=' + this.algorythm,
       'Signature=' + signature];
 
     return 'AWS3-HTTPS ' + params.join(',');

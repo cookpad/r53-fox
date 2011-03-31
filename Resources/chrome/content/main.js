@@ -14,6 +14,7 @@ function editAccount() {
   if (result) {
     Prefs.accessKeyId = result.accessKeyId;
     Prefs.secretAccessKey = result.secretAccessKey;
+    Prefs.algorythm = result.algorythm;
     $view.refresh();
   }
 }

@@ -1,3 +1,4 @@
+// added by Genki Sugawara
 var EXPORTED_SYMBOLS = ['b64_hmac_sha1'];
 
 /*

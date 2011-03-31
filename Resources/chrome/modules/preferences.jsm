@@ -24,6 +24,16 @@ var Prefs = {
     prefs.setCharPref('secretAccessKey', v);
   },
 
+  get algorythm() {
+    var v = prefs.getCharPref('algorythm');
+    return (v || '').trim();
+  },
+
+  set algorythm(v) {
+    v = (v || '').toString().trim();
+    prefs.setCharPref('algorythm', v);
+  },
+
   getChangeIds: function(hzid) {
     var changeIds = prefs.getCharPref('changeIds');
     changeIds = eval(changeIds);

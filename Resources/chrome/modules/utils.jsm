@@ -26,12 +26,13 @@ function $R53(callback, loader, self) {
 
   var accessKeyId = Prefs.accessKeyId;
   var secretAccessKey = Prefs.secretAccessKey;
+  var algorythm = Prefs.algorythm;
 
   if (!accessKeyId || !secretAccessKey) {
     return null;
   }
 
-  var r53cli = new R53Client(accessKeyId, secretAccessKey);
+  var r53cli = new R53Client(accessKeyId, secretAccessKey, algorythm);
   var query_orig = r53cli.query;
 
   r53cli.query = function() {
