@@ -18,6 +18,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 
 Components.utils.import('resource://r53fox/preferences.jsm');
+
 function onLoad() {
   var tree = $('hosted-zone-tree');
   $view = new HostedZoneTreeView();
