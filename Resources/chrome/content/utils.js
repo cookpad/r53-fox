@@ -17,32 +17,18 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 
-var EXPORTED_SYMBOLS = [
-  '$',
-  '$V',
-  '$R53',
-  '$CELL',
-  'sortRowsByColumn',
-  'openModalDialog',
-  'copyToClipboard',
-  'openURL',
-  'beep'
-  ];
-
 Components.utils.import('resource://r53fox/r53-client.jsm');
 Components.utils.import('resource://r53fox/preferences.jsm');
 
 function $(element) {
-  return this.document.getElementById(element);
+  return document.getElementById(element);
 }
 
 function $V(element) {
-  return ($.call(this, element).value || '').trim();
+  return ($(element).value || '').trim();
 }
 
-function $R53(callback, loader, self) {
-  if (!self) { self = this; }
-
+function $R53(callback, loader) {
   var accessKeyId = Prefs.accessKeyId;
   var secretAccessKey = Prefs.secretAccessKey;
   var algorythm = Prefs.algorythm;
@@ -51,7 +37,7 @@ function $R53(callback, loader, self) {
     return null;
   }
 
-  var r53cli = new R53Client(accessKeyId, secretAccessKey, algorythm);
+  var r53cli = new R53Client(window, accessKeyId, secretAccessKey, algorythm);
   var query_orig = r53cli.query;
 
   r53cli.query = function() {
@@ -80,13 +66,11 @@ function $R53(callback, loader, self) {
     };
   }
 
-  var self = this;
-
   return protect(callback_with_client, function(e) {
     if (typeof(e) == 'xml') {
-      openModalDialog.call(self, 'error-dialog', {error:(e..Error)});
+      openModalDialog('error-dialog', {error:(e..Error)});
     } else {
-      self.alert(e);
+      alert(e);
     }
   });
 }
@@ -120,7 +104,7 @@ function openModalDialog(name, args, features) {
     }
   }
 
-  this.openDialog('chrome://r53fox/content/' + name + '.xul', name, features, h);
+  openDialog('chrome://r53fox/content/' + name + '.xul', name, features, h);
 
   return(h.accepted ? h.result : null);
 }
@@ -201,7 +185,6 @@ function beep() {
   sound.beep();
 }
 
-// private
 function protect(callback, alert) {
   var retval = null;
 
@@ -234,3 +217,28 @@ function progress(loader, callback) {
 
   return retval;
 }
+
+Function.prototype.bind = function(self) {
+  var func = this;
+
+  return function() {
+    return func.apply(self, arguments);
+  };
+}
+
+Array.prototype.uniq = function() {
+  var hash = {}
+
+  for (var i = 0; i < this.length; i++) {
+    var value = this[i];
+    hash[value] = value;
+  }
+
+  var array = [];
+
+  for (var i in hash) {
+    array.push(i);
+  }
+
+  return array;
+};

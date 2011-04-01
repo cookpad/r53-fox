@@ -23,15 +23,15 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 -->
 
-<window  xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+<window xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
   id="main-window" title="R53 Fox" onload="onLoad();">
 
   <!-- scripts -->
-  <script src="global.js" />
+  <script src="utils.js" />
   <script src="main.js" />
 
   <!-- menu -->
-  <toolbox>
+  <toolbox class="exclude-in-xpi">
     <menubar>
       <menu label="File">
         <menupopup>

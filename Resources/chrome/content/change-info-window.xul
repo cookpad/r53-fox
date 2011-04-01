@@ -26,7 +26,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
   id="change-info-window" title="Select Change ID" onload="onLoad();">
 
   <!-- scripts -->
-  <script src="global.js" />
+  <script src="utils.js" />
   <script src="change-info-window.js" />
 
   <!-- body -->
