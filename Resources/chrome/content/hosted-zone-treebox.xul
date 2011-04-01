@@ -24,6 +24,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 <overlay xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
   <!-- scripts -->
+  <script src="utils.js" />
   <script src="hosted-zone-treeview.js" />
 
   <!-- menu -->
