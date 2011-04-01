@@ -51,7 +51,7 @@ function $R53(callback, loader, self) {
     return null;
   }
 
-  var r53cli = new R53Client(accessKeyId, secretAccessKey, algorythm);
+  var r53cli = new R53Client(this, accessKeyId, secretAccessKey, algorythm);
   var query_orig = r53cli.query;
 
   r53cli.query = function() {

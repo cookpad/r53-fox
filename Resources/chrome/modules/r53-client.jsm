@@ -23,9 +23,6 @@ Components.utils.import('resource://r53fox/sha1.jsm');
 Components.utils.import('resource://r53fox/base64.jsm');
 Components.utils.import('resource://r53fox/jssha256.jsm');
 
-var window = Components.classes["@mozilla.org/appshell/appShellService;1"].getService(Components.interfaces.nsIAppShellService).hiddenDOMWindow;
-var XMLHttpRequest = window.XMLHttpRequest;
-
 // sha256 encoding function
 function b64_hmac_sha256(key, data) {
   HMAC_SHA256_init(key);
@@ -42,7 +39,8 @@ function b64_hmac_sha256(key, data) {
 }
 
 // classs R53Client
-function R53Client(accessKeyId, secretAccessKey, algorythm) {
+function R53Client(window, accessKeyId, secretAccessKey, algorythm) {
+  this.window = window;
   this.accessKeyId = accessKeyId;
   this.secretAccessKey = secretAccessKey;
   this.algorythm = algorythm;
@@ -58,7 +56,7 @@ R53Client.prototype = {
   createHostedZone: function(xml, callback) {
     var url = this.url('hostedzone');
 
-    var xhr = new XMLHttpRequest();
+    var xhr = new this.window.XMLHttpRequest();
     xhr.open('POST', url, !!callback);
     xhr.setRequestHeader('Content-Length', xml.length);
     xhr.setRequestHeader('Content-Type', 'text/xml');
@@ -68,7 +66,7 @@ R53Client.prototype = {
 
   getHostedZone: function(hostedZoneId, callback) {
     var url = this.url('hostedzone', hostedZoneId);
-    var xhr = new XMLHttpRequest();
+    var xhr = new this.window.XMLHttpRequest();
     xhr.open('GET', url, !!callback);
 
     return this.query(xhr, null, callback);
@@ -76,7 +74,7 @@ R53Client.prototype = {
 
   deleteHostedZone: function(hostedZoneId, callback) {
     var url = this.url('hostedzone', hostedZoneId);
-    var xhr = new XMLHttpRequest();
+    var xhr = new this.window.XMLHttpRequest();
     xhr.open('DELETE', url, !!callback);
 
     return this.query(xhr, null, callback);
@@ -90,7 +88,7 @@ R53Client.prototype = {
       url += ('?' + qs);
     }
 
-    var xhr = new XMLHttpRequest();
+    var xhr = new this.window.XMLHttpRequest();
     xhr.open('GET', url, !!callback);
 
     return this.query(xhr, null, callback);
@@ -100,7 +98,7 @@ R53Client.prototype = {
   changeResourceRecordSets: function(hostedZoneId, xml, callback) {
     var url = this.url('hostedzone', hostedZoneId, 'rrset');
 
-    var xhr = new XMLHttpRequest();
+    var xhr = new this.window.XMLHttpRequest();
     xhr.open('POST', url, !!callback);
     xhr.setRequestHeader('Content-Length', xml.length);
     xhr.setRequestHeader('Content-Type', 'text/xml');
@@ -116,7 +114,7 @@ R53Client.prototype = {
       url += ('?' + qs);
     }
 
-    var xhr = new XMLHttpRequest();
+    var xhr = new this.window.XMLHttpRequest();
     xhr.open('GET', url, !!callback);
 
     return this.query(xhr, null, callback);
@@ -124,7 +122,7 @@ R53Client.prototype = {
 
   getChange: function(changeId, callback) {
     var url = this.url('change', changeId);
-    var xhr = new XMLHttpRequest();
+    var xhr = new this.window.XMLHttpRequest();
     xhr.open('GET', url, !!callback);
 
     return this.query(xhr, null, callback);
@@ -165,18 +163,18 @@ R53Client.prototype = {
         try {
           extxhr().callback();
         } catch (e) {
-          window.alert(e);
+          this.window.alert(e);
         }
       };
     } else {
       xhr.onreadystatechange = function() {};
     }
 
-    var timer = window.setTimeout(xhr.abort, this.TIMEOUT);
+    var timer = this.window.setTimeout(xhr.abort, this.TIMEOUT);
 
     try {
       xhr.send(body);
-      window.clearTimeout(timer);
+      this.window.clearTimeout(timer);
     } catch(e) {
       if (!callback) { clearTimeout(timer); }
       throw e;
