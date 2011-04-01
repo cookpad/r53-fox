@@ -11,3 +11,4 @@ rsync -rl /usr/local/xulrunner ./
 cd ..
 cygstart -w r53-fox.ci
 mv setup.exe R53Fox-${VERSION}-setup.exe
+rm -rf cd $SRC_DIR
