@@ -105,20 +105,21 @@ R53Client.prototype = {
 
   // private
   query: function(url, method, headers, body, callback) {
+    var date = (new Date()).toUTCString();
+
     var xhr = new this.window.XMLHttpRequest();
     xhr.open(method, url, !!callback);
 
-    for (var i = 0; i < headers.length; i++) {
-      var header = headers[i];
-      xhr.setRequestHeader(header[0], header[1]);
-    }
-
-    var date = (new Date()).toUTCString();
     xhr.setRequestHeader('X-Amzn-Authorization', this.xAmznAuthorization(date));
     xhr.setRequestHeader('Host', this.HOST);
     xhr.setRequestHeader('x-amz-date', date);
     xhr.setRequestHeader('User-Agent', this.USER_AGENT);
     xhr.setRequestHeader('Connection', 'close');
+
+    for (var i = 0; i < headers.length; i++) {
+      var header = headers[i];
+      xhr.setRequestHeader(header[0], header[1].toString());
+    }
 
     function extxhr() {
       xhr.success = function() {
