@@ -175,12 +175,9 @@ R53Client.prototype = {
       signature = b64_hmac_sha256(this.secretAccessKey, date);
     }
 
-    var params = [
-      'AWSAccessKeyId=' + this.accessKeyId,
-      'Algorithm=' + this.algorythm,
-      'Signature=' + signature];
+    var auth = 'AWS3-HTTPS AWSAccessKeyId=' + this.accessKeyId + ',Algorithm=' + this.algorythm + ',Signature=' + signature;
 
-    return 'AWS3-HTTPS ' + params.join(',');
+    return auth;
   }, // xAmznAuthorization
 
   queryString: function(params) {
