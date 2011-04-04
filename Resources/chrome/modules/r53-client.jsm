@@ -55,29 +55,18 @@ R53Client.prototype = {
   // Actions on Hosted Zones
   createHostedZone: function(xml, callback) {
     var url = this.url('hostedzone');
-
-    var xhr = new this.window.XMLHttpRequest();
-    xhr.open('POST', url, !!callback);
-    xhr.setRequestHeader('Content-Length', xml.length);
-    xhr.setRequestHeader('Content-Type', 'text/xml');
-
-    return this.query(xhr, xml, callback);
+    var headers = [['Content-Length', xml.length], ['Content-Type', 'text/xml']]
+    return this.query(url, 'POST', headers, xml, callback);
   },
 
   getHostedZone: function(hostedZoneId, callback) {
     var url = this.url('hostedzone', hostedZoneId);
-    var xhr = new this.window.XMLHttpRequest();
-    xhr.open('GET', url, !!callback);
-
-    return this.query(xhr, null, callback);
+    return this.query(url, 'GET', [], null, callback);
   },
 
   deleteHostedZone: function(hostedZoneId, callback) {
     var url = this.url('hostedzone', hostedZoneId);
-    var xhr = new this.window.XMLHttpRequest();
-    xhr.open('DELETE', url, !!callback);
-
-    return this.query(xhr, null, callback);
+    return this.query(url, 'DELETE', [], null, callback);
   },
 
   listHostedZones: function(params, callback) {
@@ -88,22 +77,14 @@ R53Client.prototype = {
       url += ('?' + qs);
     }
 
-    var xhr = new this.window.XMLHttpRequest();
-    xhr.open('GET', url, !!callback);
-
-    return this.query(xhr, null, callback);
+    return this.query(url, 'GET', [], null, callback);
   },
 
   // Actions on Resource Records Sets
   changeResourceRecordSets: function(hostedZoneId, xml, callback) {
     var url = this.url('hostedzone', hostedZoneId, 'rrset');
-
-    var xhr = new this.window.XMLHttpRequest();
-    xhr.open('POST', url, !!callback);
-    xhr.setRequestHeader('Content-Length', xml.length);
-    xhr.setRequestHeader('Content-Type', 'text/xml');
-
-    return this.query(xhr, xml, callback);
+    var headers = [['Content-Length', xml.length], ['Content-Type', 'text/xml']]
+    return this.query(url, 'POST', headers, xml, callback);
   },
 
   listResourceRecordSets: function(hostedZoneId, params, callback) {
@@ -114,22 +95,24 @@ R53Client.prototype = {
       url += ('?' + qs);
     }
 
-    var xhr = new this.window.XMLHttpRequest();
-    xhr.open('GET', url, !!callback);
-
-    return this.query(xhr, null, callback);
+    return this.query(url, 'GET', [], null, callback);
   },
 
   getChange: function(changeId, callback) {
     var url = this.url('change', changeId);
-    var xhr = new this.window.XMLHttpRequest();
-    xhr.open('GET', url, !!callback);
-
-    return this.query(xhr, null, callback);
+    return this.query(url, 'GET', [], null, callback);
   },
 
   // private
-  query: function(xhr, body, callback) {
+  query: function(url, method, headers, body, callback) {
+    var xhr = new this.window.XMLHttpRequest();
+    xhr.open(method, url, !!callback);
+
+    for (var i = 0; i < headers.length; i++) {
+      var header = headers[i];
+      xhr.setRequestHeader(header[0], header[1]);
+    }
+
     var date = (new Date()).toUTCString();
     xhr.setRequestHeader('X-Amzn-Authorization', this.xAmznAuthorization(date));
     xhr.setRequestHeader('Host', this.HOST);
