@@ -18,14 +18,18 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 
 function onLoad() {
-  var resourceRecordSet = window.arguments[0].resourceRecordSet;
+  var args = window.arguments[0];
+  var resourceRecordSet = args.resourceRecordSet;
+  var name = resourceRecordSet.Name.toString();
+
   var values = [];
 
   for each (var member in resourceRecordSet..ResourceRecords.ResourceRecord) {
     values.push(member.Value.toString());
   }
 
-  $('rrset-detail-window-name').value = resourceRecordSet.Name.toString();
+  document.title = "Detail - " + name;
+  $('rrset-detail-window-name').value = name;
   $('rrset-detail-window-type').value = resourceRecordSet.Type.toString();
   $('rrset-detail-window-ttl').value = resourceRecordSet.TTL.toString();
   $('rrset-detail-window-value').value = values.join('\n');
