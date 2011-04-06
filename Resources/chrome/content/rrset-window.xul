@@ -36,6 +36,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
   <popupset>
     <menupopup id="rrset-tree-contenx-menu">
       <menuitem label="Detail" class="bold" oncommand="$view.showDetail()" />
+      <menuitem label="Edit" oncommand="$view.editRRSet()" />
       <menuseparator />
       <menuitem label="Delete" oncommand="$view.deleteRRSet()" />
     </menupopup>

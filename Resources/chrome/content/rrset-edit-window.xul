@@ -1,0 +1,82 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+<?xml-stylesheet href="chrome://r53fox/skin/" type="text/css"?>
+<!DOCTYPE window SYSTEM "chrome://r53fox/locale/r53fox.dtd">
+
+<!--
+R53 Fox - a GUI client of Amazon Route 53
+Copyright (C) 2011 Genki Sugawara
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+-->
+
+<window  xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+  id="rrset-edit-window" title="Edit Resource Record Set" onload="onLoad();"
+  width="500" height="400">
+
+  <!-- scripts -->
+  <script src="utils.js" />
+  <script src="rrset-edit-window.js" />
+
+  <!-- body -->
+  <vbox class="content" flex="1">
+    <grid flex="1">
+      <columns flex="1">
+        <column flex="1" />
+        <column flex="4" />
+      </columns>
+      <rows>
+        <row>
+          <label control="rrset-edit-window-name" value="Name" />
+          <textbox id="rrset-edit-window-name" />
+        </row>
+        <row>
+          <label control="rrset-edit-window-type" value="Type" />
+          <menulist id="rrset-edit-window-type">
+            <menupopup>
+              <menuitem label="A" value="A" />
+              <menuitem label="AAAA" value="AAAA" />
+              <menuitem label="CNAME" value="CNAME" />
+              <menuitem label="MX" value="MX" />
+              <menuitem label="NS" value="NS" />
+              <menuitem label="PTR" value="PTR" />
+              <menuitem label="SOA" value="SOA" />
+              <menuitem label="SPF" value="SPF" />
+              <menuitem label="SRV" value="SRV" />
+              <menuitem label="TXT" value="TXT"/>
+            </menupopup>
+          </menulist>
+        </row>
+        <row>
+          <label control="rrset-edit-window-ttl" value="TTL" />
+          <textbox id="rrset-edit-window-ttl" />
+        </row>
+        <row flex="1">
+          <label control="rrset-edit-window-value" value="Value" />
+          <textbox id="rrset-edit-window-value" multiline="true" wrap="off" flex="1" />
+        </row>
+        <row>
+          <label control="rrset-edit-window-comment" value="Comment" />
+          <textbox id="rrset-edit-window-comment" multiline="true" row="2" />
+        </row>
+      </rows>
+    </grid>
+    <hbox>
+      <spacer flex="1" />
+      <button label="Save" oncommand="onAccept();" />
+      <button label="Cancel" oncommand="close();" />
+    </hbox>
+  </vbox>
+</window>

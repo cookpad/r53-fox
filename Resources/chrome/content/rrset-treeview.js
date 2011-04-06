@@ -163,6 +163,78 @@ RRSetTreeView.prototype = {
     openModalDialog('rrset-detail-window', {resourceRecordSet:row});
   },
 
+  editRRSet: function() {
+    var row = this.selectedRow();
+    if (!row) { return; }
+
+    var result = openModalDialog('rrset-edit-window', {resourceRecordSet:row});
+    if (!result) { return; }
+
+    var xml = <ChangeResourceRecordSetsRequest xmlns="https://route53.amazonaws.com/doc/2010-10-01/"></ChangeResourceRecordSetsRequest>;
+
+    if (result.comment) {
+      xml.ChangeBatch.Comment = result.comment;
+    }
+
+    // DELETE
+    (function() {
+      var values = [];
+
+      for each (var member in row..ResourceRecords.ResourceRecord) {
+        values.push(member.Value.toString());
+      }
+
+      var change_delete = new XML('<Change></Change>');
+      change_delete.Action = 'DELETE';
+      change_delete.ResourceRecordSet.Name = row.Name.toString();
+      change_delete.ResourceRecordSet.Type = row.Type.toString();
+      change_delete.ResourceRecordSet.TTL = row.TTL.toString();
+
+      for (var i = 0; i < values.length; i ++) {
+        var rr = new XML('<ResourceRecord></ResourceRecord>');
+        rr.Value = values[i];
+        change_delete.ResourceRecordSet.ResourceRecords.ResourceRecord += rr;
+      }
+
+      xml.ChangeBatch.Changes.Change += change_delete;
+    })();
+
+    // CREATE
+    (function() {
+      var change_create = new XML('<Change></Change>');
+      change_create.Action = 'CREATE';
+      change_create.ResourceRecordSet.Name = result.name;
+      change_create.ResourceRecordSet.Type = result.type;
+      change_create.ResourceRecordSet.TTL = result.ttl;
+
+      var values = result.value.split(/\n+/);
+
+      for (var i = 0; i < values.length; i ++) {
+        var rr = new XML('<ResourceRecord></ResourceRecord>');
+        rr.Value = values[i];
+        change_create.ResourceRecordSet.ResourceRecords.ResourceRecord += rr;
+      }
+
+      xml.ChangeBatch.Changes.Change += change_create;
+    })();
+
+    var xhr = null;
+
+    $R53(function(r53cli) {
+      xhr = r53cli.changeResourceRecordSets(this.hostedZoneId, '<?xml version="1.0" encoding="UTF-8"?>' + xml);
+    }.bind(this), $('rrset-window-loader'));
+
+    if (xhr && xhr.success()) {
+      var changeInfo = xhr.xml()..ChangeInfo;
+      var chid = changeInfo.Id.toString();
+      chid = chid.split('/');
+      chid = chid[chid.length - 1];
+      Prefs.addChangeId(this.hostedZoneId, chid, changeInfo.SubmittedAt);
+      openModalDialog('change-info-detail-window', {changeInfo:changeInfo});
+      this.refresh();
+    }
+  },
+
   deleteRRSet: function() {
     var row = this.selectedRow();
     if (!row) { return; }
