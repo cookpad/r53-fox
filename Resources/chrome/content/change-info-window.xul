@@ -23,22 +23,28 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 -->
 
 <window  xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
-  id="change-info-window" title="Select Change ID" onload="onLoad();">
+  id="change-info-window" title="Select Change ID" onload="onLoad();"
+  width="400" height="300">
 
   <!-- scripts -->
   <script src="utils.js" />
   <script src="change-info-window.js" />
+  <script src="change-info-treeview.js" />
 
   <!-- body -->
   <vbox class="content" flex="1">
-    <label control="change-info-window-change-id" value="Change ID" />
-    <menulist id="change-info-window-change-id">
-      <menupopup />
-    </menulist>
+    <tree id="change-info-tree" seltype="single" enableColumnDrag="true" flex="1" ondblclick="$view.accept(event);">
+      <treecols>
+        <treecol id="change-info-tree.ChangeId" label="Change ID" flex="1" persist="width ordinal hidden sortDirection" />
+        <splitter class="tree-splitter" />
+        <treecol id="change-info-tree.SubmittedAt" label="Submitted At" flex="1" persist="width ordinal hidden sortDirection" />
+      </treecols>
+      <treechildren />
+    </tree>
     <hbox>
       <spacer flex="1" />
-      <button label="OK" oncommand="onAccept();" />
-      <button label="Cancel" oncommand="close();" />
+      <button label="Select" oncommand="$view.accept();" />
+      <button label="Close" oncommand="close();" />
     </hbox>
   </vbox>
 </window>
