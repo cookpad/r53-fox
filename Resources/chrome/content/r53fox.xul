@@ -7,6 +7,5 @@
   xmlns:html="http://www.w3.org/1999/xhtml" >
   <menupopup id="menu_ToolsPopup">
     <menuitem id="menu_r53fox" class="menuitem-iconic" label="R53 Fox" insertbefore="javascriptConsole" oncommand="getBrowser().selectedTab = getBrowser().addTab('chrome://r53fox/content/main.xul');" />
-    <menuseparator insertbefore="goOfflineMenuitem" />
   </menupopup>
 </overlay>
