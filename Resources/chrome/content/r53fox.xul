@@ -1,10 +1,12 @@
 <?xml version="1.0"?>
 <?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+<?xml-stylesheet href="chrome://r53fox/skin/" type="text/css"?>
 
 <overlay id="r53-fox"
   xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
   xmlns:html="http://www.w3.org/1999/xhtml" >
   <menupopup id="menu_ToolsPopup">
-    <menuitem oncommand="getBrowser().selectedTab = getBrowser().addTab('chrome://r53fox/content/main.xul');" insertafter="javascriptConsole,devToolsSeparator" label="R53 Fox" />
+    <menuitem id="menu_r53fox" class="menuitem-iconic" label="R53 Fox" insertbefore="javascriptConsole" oncommand="getBrowser().selectedTab = getBrowser().addTab('chrome://r53fox/content/main.xul');" />
+    <menuseparator insertbefore="goOfflineMenuitem" />
   </menupopup>
 </overlay>
