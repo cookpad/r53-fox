@@ -36,3 +36,7 @@ spacer.statusbar {
 #menu_r53fox {
   list-style-image: url('menuicon.png');
 }
+
+menuitem {
+  color: black;
+}
