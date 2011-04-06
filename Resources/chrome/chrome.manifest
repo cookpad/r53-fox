@@ -1,5 +1,5 @@
+content  r53fox             content/
+locale   r53fox en-US       locale/en-US/
+skin     r53fox classic/1.0 skin/classic/
+resource r53fox             modules/
 overlay  chrome://browser/content/browser.xul chrome://r53fox/content/r53fox.xul
-content  r53fox             file:content/
-locale   r53fox en-US       file:locale/en-US/
-skin     r53fox classic/1.0 file:skin/classic/
-resource r53fox             file:modules/
