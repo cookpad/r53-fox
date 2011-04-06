@@ -24,11 +24,16 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 -->
 
 <window xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+  xmlns:html="http://www.w3.org/1999/xhtml"
   id="main-window" title="R53 Fox" onload="onLoad();">
 
   <!-- scripts -->
   <script src="utils.js" />
   <script src="main.js" />
+
+  <box>
+    <html:link rel="icon" href="favicon.png"/>
+  </box>
 
   <!-- menu -->
   <toolbox class="exclude-in-xpi">
