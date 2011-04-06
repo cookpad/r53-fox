@@ -20,12 +20,15 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 function onLoad() {
   var xml = window.arguments[0].xml;
   var hostedZone = xml..HostedZone;
+  var name = hostedZone.Name.toString();
+
   var nss = [];
 
   for each (var member in xml..NameServers.NameServer) {
     nss.push(member.toString());
   }
 
+  document.title = "Detail - " + name;
   $('hosted-zone-detail-window-id').value = hostedZone.Id.toString();
   $('hosted-zone-detail-window-name').value = hostedZone.Name.toString();
   $('hosted-zone-detail-window-caller-reference').value = hostedZone.CallerReference.toString();
