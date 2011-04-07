@@ -1,5 +1,5 @@
 #!/bin/sh
-VERSION=0.1.4
+VERSION=0.1.4-1
 XPI=r53-fox-${VERSION}.xpi
 
 rm -rf *.xpi 
