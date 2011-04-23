@@ -23,24 +23,159 @@ var prefs = Components.classes['@mozilla.org/preferences;1'].getService(Componen
 prefs = prefs.getBranch('r53fox.');
 
 var Prefs = {
+  version: '0.1.6',
+
+  get currentUser() {
+    return prefs.getCharPref('currentUser', null);
+  },
+
+  set currentUser(v) {
+    prefs.setCharPref('currentUser', v);
+  },
+
+  convert: function() {
+    var version = prefs.getCharPref('version');
+    var accessKeyId = (prefs.getCharPref('accessKeyId') || '');
+
+    if (!version && accessKeyId) {
+      var secretAccessKey = (prefs.getCharPref('secretAccessKey') || '');
+      var changeIds = prefs.getCharPref('changeIds');
+      changeIds = eval(changeIds);
+
+      Prefs.currentUser = 'Your name';
+
+      var accounts = [
+        [
+          Prefs.currentUser,
+          {
+            accessKeyId:accessKeyId,
+            secretAccessKey:secretAccessKey,
+            changeIds:changeIds
+          }
+        ]
+      ];
+
+      prefs.setCharPref('accounts', accounts.toSource());
+      prefs.setCharPref('version', this.version);
+    }
+  },
+
+  getAccountList: function() {
+    this.convert();
+    var accounts = prefs.getCharPref('accounts', '([])');
+    return eval(accounts);
+  },
+
+  storeAccountList: function(updated) {
+    prefs.setCharPref('accounts', updated.toSource());
+  },
+
+  addAccount: function(userName, accessKeyId, secretAccessKey) {
+    var accounts = this.getAccountList();
+
+    var newAccount = [
+      userName,
+      {
+        accessKeyId:accessKeyId,
+        secretAccessKey:secretAccessKey
+      }
+    ];
+
+    var index = -1;
+
+    for(var i = 0; i < accounts.length; i++) {
+      if (accounts[i][0] == userName) {
+        index = i;
+        break;
+      }
+    }
+
+    if (index == -1) {
+      accounts.push(newAccount);
+    } else {
+      accounts.splice(index, 1, newAccount);
+    }
+
+    this.storeAccountList(accounts);
+
+    if (accounts.length == 1) {
+      this.currentUser = accounts[0][0];
+    }
+  },
+
+  deleteAccount: function(userName) {
+    var accounts = this.getAccountList();
+    var index = -1;
+
+    for(var i = 0; i < accounts.length; i++) {
+      if (accounts[i][0] == userName) {
+        index = i;
+        break;
+      }
+    }
+
+    if (index != -1) {
+      accounts.splice(index, 1);
+      this.storeAccountList(accounts);
+
+      if (accounts.length > 0) {
+        this.currentUser = accounts[0][0];
+      } else {
+        this.currentUser = '';
+      }
+    }
+  },
+
+  getAccount: function() {
+    var accounts = this.getAccountList();
+
+    var userName = this.currentUser;
+    if (!userName) { return {}; }
+
+    for (var i = 0; i < accounts.length; i++) {
+      if (accounts[i][0] == userName) {
+        return accounts[i][1];
+      }
+    }
+
+    return {};
+  },
+
+  storeAccount: function(updated) {
+    var accounts = this.getAccountList();
+
+    var userName = this.currentUser;
+    if (!userName) { return; }
+
+    for (var i = 0; i < accounts.length; i++) {
+      if (accounts[i][0] == userName) {
+        accounts[i][1] = updated;
+        this.storeAccountList(accounts);
+        break;
+      }
+    }
+  },
+
   get accessKeyId() {
-    var v = prefs.getCharPref('accessKeyId');
-    return (v || '').trim();
+    var account = this.getAccount();
+    return (account.accessKeyId || '').trim();
   },
 
   set accessKeyId(v) {
-    v = (v || '').toString().trim();
-    prefs.setCharPref('accessKeyId', v);
+    var account = this.getAccount();
+    account.accessKeyId = (v || '').toString().trim();
+    this.storeAccount(account);
   },
 
   get secretAccessKey() {
-    var v = prefs.getCharPref('secretAccessKey');
-    return (v || '').trim();
+    var account = this.getAccount();
+    return (account.secretAccessKey || '').trim();
   },
 
   set secretAccessKey(v) {
-    v = (v || '').toString().trim();
-    prefs.setCharPref('secretAccessKey', v);
+    var account = this.getAccount();
+    account.secretAccessKey = (v || '').toString().trim();
+    this.storeAccount(account);
   },
 
   get algorythm() {
@@ -54,18 +189,19 @@ var Prefs = {
   },
 
   getChangeIds: function(hzid) {
-    var changeIds = prefs.getCharPref('changeIds');
-    changeIds = eval(changeIds);
+    var account = this.getAccount();
+    var changeIds = account.changeIds;
     return changeIds[hzid];
   },
 
   addChangeId: function(hzid, chid, date) {
     chid = chid.toString();
     date = date.toString();
-    var changeIds = prefs.getCharPref('changeIds');
-    changeIds = eval(changeIds);
+    var account = this.getAccount();
+    var changeIds = account.changeIds;
     if (!changeIds[hzid]) { changeIds[hzid] = []; }
     changeIds[hzid].push([chid, date]);
-    prefs.setCharPref('changeIds', changeIds.toSource());
+    account.changeIds = changeIds;
+    this.storeAccount(account);
   }
 };
