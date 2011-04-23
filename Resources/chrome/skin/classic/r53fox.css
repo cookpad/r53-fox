@@ -40,3 +40,11 @@ spacer.statusbar {
 menuitem {
   color: black;
 }
+
+treechildren::-moz-tree-checkbox(checked) {
+  list-style-image: url(chrome://global/skin/checkbox/cbox-check.gif);
+}
+
+treechildren::-moz-tree-checkbox(checked, DISABLED){
+  list-style-image: url(chrome://global/skin/checkbox/cbox-check-dis.gif);
+}
