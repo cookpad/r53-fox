@@ -190,7 +190,7 @@ var Prefs = {
 
   getChangeIds: function(hzid) {
     var account = this.getAccount();
-    var changeIds = account.changeIds;
+    var changeIds = (account.changeIds || {});
     return changeIds[hzid];
   },
 
@@ -198,7 +198,7 @@ var Prefs = {
     chid = chid.toString();
     date = date.toString();
     var account = this.getAccount();
-    var changeIds = account.changeIds;
+    var changeIds = (account.changeIds || {});
     if (!changeIds[hzid]) { changeIds[hzid] = []; }
     changeIds[hzid].push([chid, date]);
     account.changeIds = changeIds;
