@@ -20,8 +20,15 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 Components.utils.import('resource://r53fox/preferences.jsm');
 
 function onLoad() {
-  $('account-dialog-access-key-id').value = Prefs.accessKeyId;
-  $('account-dialog-secret-access-key').value = Prefs.secretAccessKey;
+  $view = new AccountTreeView(
+    $('account-dialog-user-name'),
+    $('account-dialog-access-key-id'),
+    $('account-dialog-secret-access-key')
+  );
+
+  $('account-tree').view = $view;
+  $view.refresh();
+
   var algorythm = $('account-dialog-algorythm');
 
   if (Prefs.algorythm == 'HmacSHA1') {
@@ -31,20 +38,26 @@ function onLoad() {
   }
 }
 
-function onDialogAccept() {
+function onDialogClose() {
   var args = window.arguments[0];
+  Prefs.algorythm = $('account-dialog-algorythm').selectedItem.value;
+  args.accepted = true;
+  return true;
+}
 
+function addUpdateAccount() {
+  var userName = $V('account-dialog-user-name');
   var accessKeyId = $V('account-dialog-access-key-id');
   var secretAccessKey = $V('account-dialog-secret-access-key');
-  var algorythm = $('account-dialog-algorythm').selectedItem.value;
 
-  if (!accessKeyId || !secretAccessKey) {
-    alert("Please input 'AWS Access Key ID' and 'AWS Secret Access Key'.");
-    return false;
+  if (!userName || !accessKeyId || !secretAccessKey) {
+    alert("Please input 'User Name', 'AWS Access Key ID' and 'AWS Secret Access Key'.");
+    return;
   }
 
-  args.accepted = true;
-  args.result = {accessKeyId:accessKeyId, secretAccessKey:secretAccessKey, algorythm:algorythm};
+  $view.addAccount(userName, accessKeyId, secretAccessKey);
 
-  return true;
+  $('account-dialog-user-name').value = '';
+  $('account-dialog-access-key-id').value = '';
+  $('account-dialog-secret-access-key').value = '';
 }

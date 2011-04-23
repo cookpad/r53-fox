@@ -27,14 +27,8 @@ function onLoad() {
 }
 
 function editAccount() {
-  var result = openModalDialog('account-dialog');
-
-  if (result) {
-    Prefs.accessKeyId = result.accessKeyId;
-    Prefs.secretAccessKey = result.secretAccessKey;
-    Prefs.algorythm = result.algorythm;
-    $view.refresh();
-  }
+  openModalDialog('account-dialog');
+  $view.refresh();
 }
 
 function about() {

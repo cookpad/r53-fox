@@ -24,20 +24,66 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 <dialog xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
   title="Account"
-  buttons="accept,cancel"
-  ondialogaccept="return onDialogAccept();"
-  ondialogcancel="return true;"
-  onload="onLoad();">
+  buttons="accept"
+  buttonlabelaccept="Close"
+  ondialogaccept="return onDialogClose();"
+  onload="onLoad();"
+  width="500" height="500">
 
   <!-- scripts -->
   <script src="utils.js" />
   <script src="account-dialog.js" />
+  <script src="account-treeview.js" />
 
-  <!-- inputs -->
-  <label control="account-dialog-access-key-id" value="AWS Access Key ID" />
-  <textbox id="account-dialog-access-key-id"/>
-  <label control="account-dialog-secret-access-key" value="AWS Secret Access Key" />
-  <textbox id="account-dialog-secret-access-key" type="password" />
+  <!-- context menu -->
+  <popupset>
+    <menupopup id="account-tree-contenx-menu">
+      <menuitem label="Delete" oncommand="$view.deleteAccount();" />
+    </menupopup>
+  </popupset>
+
+  <groupbox flex="1">
+    <!-- tree -->
+    <caption label="Account" />
+    <tree id="account-tree" seltype="single" flex="1" editable="true" ondblclick="$view.onDblclick(event);">
+      <treecols>
+        <treecol id="account-tree-use" label="Use" type="checkbox" editable="true" />
+        <splitter class="tree-splitter" />
+        <treecol id="account-tree.0" label="User Name" flex="1" />
+        <splitter class="tree-splitter" />
+        <treecol id="account-tree.1" label="AWS Access Key ID" flex="1" />
+      </treecols>
+      <treechildren context="account-tree-contenx-menu" />
+    </tree>
+
+    <!-- inputs -->
+    <grid>
+      <columns>
+        <column flex="1" />
+        <column flex="3" />
+      </columns>
+      <rows>
+        <row>
+          <label control="account-dialog-userName" value="User Name" />
+          <textbox id="account-dialog-user-name" />
+        </row>
+        <row>
+          <label control="account-dialog-access-key-id" value="AWS Access Key ID" />
+          <textbox id="account-dialog-access-key-id" />
+        </row>
+        <row>
+          <label control="account-dialog-secret-access-key" value="AWS Secret Access Key" />
+          <textbox id="account-dialog-secret-access-key" type="password" />
+        </row>
+      </rows>
+    </grid>
+
+    <hbox>
+      <spacer flex="1" />
+      <button label="Add / Update" class="mini-button" oncommand="addUpdateAccount();" />
+    </hbox>
+  </groupbox>
+
   <groupbox orient="horizontal">
     <caption label="Algorithm" />
     <radiogroup id="account-dialog-algorythm">
