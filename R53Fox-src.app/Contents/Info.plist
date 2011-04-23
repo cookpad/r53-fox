@@ -21,7 +21,7 @@
 	<key>CFBundleSignature</key>
 	<string>R53FOX</string>
 	<key>CFBundleVersion</key>
-	<string>0.1.5</string>
+	<string>0.1.5-1</string>
 	<key>NSAppleScriptEnabled</key>
 	<true/>
 </dict>
