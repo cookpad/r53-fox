@@ -47,7 +47,7 @@ function R53Client(window, accessKeyId, secretAccessKey, algorythm) {
 }
 
 R53Client.prototype = {
-  USER_AGENT: 'R53Client/0.1.0',
+  USER_AGENT: 'R53Client/0.1.1',
   HOST: 'route53.amazonaws.com',
   API_VERSION: '2010-10-01',
   TIMEOUT: 30000,
