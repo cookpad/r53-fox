@@ -104,8 +104,30 @@ R53Client.prototype = {
   },
 
   // private
+  fetchDate: function() {
+    var xhr = new this.window.XMLHttpRequest();
+    xhr.open('GET', 'https://' + this.HOST + '/date', false);
+
+    var timer = this.window.setTimeout(xhr.abort, this.TIMEOUT);
+
+    try {
+      xhr.send(null);
+      this.window.clearTimeout(timer);
+    } catch(e) {
+      if (!callback) { clearTimeout(timer); }
+      throw e;
+    }
+
+    if (!(xhr.status && xhr.status >= 200 && xhr.status < 300)) {
+      throw 'could not fetch date';
+    }
+
+    return xhr.getResponseHeader('Date');
+  },
+
   query: function(url, method, headers, body, callback) {
-    var date = (new Date()).toUTCString();
+    var date = this.fetchDate();
+    //var date = (new Date()).toUTCString();
 
     var xhr = new this.window.XMLHttpRequest();
     xhr.open(method, url, !!callback);
