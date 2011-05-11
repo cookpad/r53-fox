@@ -114,7 +114,7 @@ R53Client.prototype = {
       xhr.send(null);
       this.window.clearTimeout(timer);
     } catch(e) {
-      if (!callback) { clearTimeout(timer); }
+      this.window.clearTimeout(timer);
       throw e;
     }
 
@@ -182,7 +182,7 @@ R53Client.prototype = {
       xhr.send(body);
       this.window.clearTimeout(timer);
     } catch(e) {
-      if (!callback) { clearTimeout(timer); }
+      if (!callback) { this.window.clearTimeout(timer); }
       throw e;
     }
 
