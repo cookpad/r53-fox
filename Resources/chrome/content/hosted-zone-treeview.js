@@ -108,7 +108,7 @@ HostedZoneTreeView.prototype = {
     var result = openModalDialog('hosted-zone-create-window');
     if (!result) { return; }
 
-    var xml = <CreateHostedZoneRequest xmlns="https://route53.amazonaws.com/doc/2010-10-01/"></CreateHostedZoneRequest>;
+    var xml = <CreateHostedZoneRequest xmlns="https://route53.amazonaws.com/doc/2011-05-05/"></CreateHostedZoneRequest>;
     xml.Name = result.name;
     xml.CallerReference = result.callerReference;
 

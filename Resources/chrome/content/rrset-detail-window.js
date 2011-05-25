@@ -31,6 +31,8 @@ function onLoad() {
   document.title = "Detail - " + name;
   $('rrset-detail-window-name').value = name;
   $('rrset-detail-window-type').value = resourceRecordSet.Type.toString();
+  $('rrset-detail-window-identifier').value = resourceRecordSet.SetIdentifier.toString();
+  $('rrset-detail-window-weight').value = resourceRecordSet.Weight.toString();
   $('rrset-detail-window-ttl').value = resourceRecordSet.TTL.toString();
   $('rrset-detail-window-value').value = values.join('\n');
 }

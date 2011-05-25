@@ -30,6 +30,8 @@ function onLoad() {
   document.title = "Edit - " + name;
   $('rrset-edit-window-name').value = name;
   $('rrset-edit-window-type').value = resourceRecordSet.Type.toString();
+  $('rrset-edit-window-identifier').value = resourceRecordSet.SetIdentifier.toString();
+  $('rrset-edit-window-weight').value = resourceRecordSet.Weight.toString();
   $('rrset-edit-window-ttl').value = resourceRecordSet.TTL.toString();
   $('rrset-edit-window-value').value = values.join('\n');
 }
@@ -39,6 +41,8 @@ function onAccept() {
 
   var name = $V('rrset-edit-window-name');
   var type = $('rrset-edit-window-type').selectedItem.value;
+  var identifier = $V('rrset-edit-window-identifier');
+  var weight = $V('rrset-edit-window-weight');
   var ttl = $V('rrset-edit-window-ttl');
   var value = $V('rrset-edit-window-value');
   var comment = $V('rrset-edit-window-comment');
@@ -48,8 +52,17 @@ function onAccept() {
     return;
   }
 
+  if ((identifier || weight) && !(({A:1, AAAA:1, CNAME:1, TXT:1})[type])) {
+    alert("Weighted resource record sets are supported only for A, AAAA, CNAME, and TXT record types.");
+    return;
+  }
+
+  if ((identifier && !weight) || (!identifier && weight)) {
+    alert("Please input 'Identifier' and 'Weight'.");
+  }
+
   args.accepted = true;
-  args.result = {name:name, type:type, ttl:ttl, value:value, comment:comment};
+  args.result = {name:name, type:type, identifier:identifier, weight:weight, ttl:ttl, value:value, comment:comment};
 
   close();
 }

@@ -27,6 +27,8 @@ function onAccept() {
 
   var name = $V('rrset-create-window-name');
   var type = $('rrset-create-window-type').selectedItem.value;
+  var identifier = $V('rrset-create-window-identifier');
+  var weight = $V('rrset-create-window-weight');
   var ttl = $V('rrset-create-window-ttl');
   var value = $V('rrset-create-window-value');
   var comment = $V('rrset-create-window-comment');
@@ -36,8 +38,17 @@ function onAccept() {
     return;
   }
 
+  if ((identifier || weight) && !(({A:1, AAAA:1, CNAME:1, TXT:1})[type])) {
+    alert("Weighted resource record sets are supported only for A, AAAA, CNAME, and TXT record types.");
+    return;
+  }
+
+  if ((identifier && !weight) || (!identifier && weight)) {
+    alert("Please input 'Identifier' and 'Weight'.");
+  }
+
   args.accepted = true;
-  args.result = {name:name, type:type, ttl:ttl, value:value, comment:comment};
+  args.result = {name:name, type:type, identifier:identifier, weight:weight, ttl:ttl, value:value, comment:comment};
 
   close();
 }

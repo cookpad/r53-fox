@@ -116,7 +116,7 @@ RRSetTreeView.prototype = {
     var result = openModalDialog('rrset-create-window', {hostedZoneName:this.hostedZoneName});
     if (!result) { return; }
 
-    var xml = <ChangeResourceRecordSetsRequest xmlns="https://route53.amazonaws.com/doc/2010-10-01/"></ChangeResourceRecordSetsRequest>;
+    var xml = <ChangeResourceRecordSetsRequest xmlns="https://route53.amazonaws.com/doc/2011-05-05/"></ChangeResourceRecordSetsRequest>;
 
     if (result.comment) {
       xml.ChangeBatch.Comment = result.comment;
@@ -126,6 +126,15 @@ RRSetTreeView.prototype = {
     change.Action = 'CREATE';
     change.ResourceRecordSet.Name = result.name;
     change.ResourceRecordSet.Type = result.type;
+
+    if (result.identifier) {
+      change.ResourceRecordSet.SetIdentifier = result.identifier;
+    }
+
+    if (result.weight) {
+      change.ResourceRecordSet.Weight = result.weight;
+    }
+
     change.ResourceRecordSet.TTL = result.ttl;
 
     var values = result.value.split(/\n+/);
@@ -170,7 +179,7 @@ RRSetTreeView.prototype = {
     var result = openModalDialog('rrset-edit-window', {resourceRecordSet:row});
     if (!result) { return; }
 
-    var xml = <ChangeResourceRecordSetsRequest xmlns="https://route53.amazonaws.com/doc/2010-10-01/"></ChangeResourceRecordSetsRequest>;
+    var xml = <ChangeResourceRecordSetsRequest xmlns="https://route53.amazonaws.com/doc/2011-05-05/"></ChangeResourceRecordSetsRequest>;
 
     if (result.comment) {
       xml.ChangeBatch.Comment = result.comment;
@@ -188,6 +197,15 @@ RRSetTreeView.prototype = {
       change_delete.Action = 'DELETE';
       change_delete.ResourceRecordSet.Name = row.Name.toString();
       change_delete.ResourceRecordSet.Type = row.Type.toString();
+
+      if (row.SetIdentifier.toString().trim()) {
+        change_delete.ResourceRecordSet.SetIdentifier = row.SetIdentifier.toString();
+      }
+
+      if (row.Weight.toString().trim()) {
+        change_delete.ResourceRecordSet.Weight = row.Weight.toString();
+      }
+
       change_delete.ResourceRecordSet.TTL = row.TTL.toString();
 
       for (var i = 0; i < values.length; i ++) {
@@ -205,6 +223,15 @@ RRSetTreeView.prototype = {
       change_create.Action = 'CREATE';
       change_create.ResourceRecordSet.Name = result.name;
       change_create.ResourceRecordSet.Type = result.type;
+
+      if (result.identifier) {
+        change_create.ResourceRecordSet.SetIdentifier = result.identifier;
+      }
+
+      if (result.weight) {
+        change_create.ResourceRecordSet.Weight = result.weight;
+      }
+
       change_create.ResourceRecordSet.TTL = result.ttl;
 
       var values = result.value.split(/\n+/);
@@ -245,6 +272,8 @@ RRSetTreeView.prototype = {
     if (!result) { return; }
 
     var type = row.Type.toString();
+    var identifier = row.SetIdentifier.toString().trim();
+    var weight = row.Weight.toString().trim();
     var ttl = row.TTL.toString();
     var values = [];
     var comment = result.comment;
@@ -253,7 +282,7 @@ RRSetTreeView.prototype = {
       values.push(member.Value.toString());
     }
 
-    var xml = <ChangeResourceRecordSetsRequest xmlns="https://route53.amazonaws.com/doc/2010-10-01/"></ChangeResourceRecordSetsRequest>;
+    var xml = <ChangeResourceRecordSetsRequest xmlns="https://route53.amazonaws.com/doc/2011-05-05/"></ChangeResourceRecordSetsRequest>;
 
     if (comment) {
       xml.ChangeBatch.Comment = comment;
@@ -263,6 +292,15 @@ RRSetTreeView.prototype = {
     change.Action = 'DELETE';
     change.ResourceRecordSet.Name = name;
     change.ResourceRecordSet.Type = type;
+
+    if (identifier) {
+      change.ResourceRecordSet.SetIdentifier = identifier;
+    }
+
+    if (weight) {
+      change.ResourceRecordSet.Weight = weight;
+    }
+
     change.ResourceRecordSet.TTL = ttl;
 
     for (var i = 0; i < values.length; i ++) {

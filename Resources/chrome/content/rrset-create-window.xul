@@ -60,6 +60,14 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
           </menulist>
         </row>
         <row>
+          <label control="rrset-create-window-identifier" value="Identifier" />
+          <textbox id="rrset-create-window-identifier" />
+        </row>
+        <row>
+          <label control="rrset-create-window-weight" value="Weight" />
+          <textbox id="rrset-create-window-weight" />
+        </row>
+        <row>
           <label control="rrset-create-window-ttl" value="TTL" />
           <textbox id="rrset-create-window-ttl" />
         </row>
