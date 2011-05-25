@@ -49,7 +49,7 @@ function R53Client(window, accessKeyId, secretAccessKey, algorythm) {
 R53Client.prototype = {
   USER_AGENT: 'R53Client/0.1.1',
   HOST: 'route53.amazonaws.com',
-  API_VERSION: '2010-10-01',
+  API_VERSION: '2011-05-05',
   TIMEOUT: 30000,
 
   // Actions on Hosted Zones
