@@ -47,6 +47,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
           <menulist id="rrset-create-window-type">
             <menupopup>
               <menuitem label="A" value="A" />
+              <menuitem label="A (Alias)" value="AA" />
               <menuitem label="AAAA" value="AAAA" />
               <menuitem label="CNAME" value="CNAME" />
               <menuitem label="MX" value="MX" />
