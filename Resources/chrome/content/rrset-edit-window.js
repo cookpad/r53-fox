@@ -29,11 +29,46 @@ function onLoad() {
 
   document.title = "Edit - " + name;
   $('rrset-edit-window-name').value = name;
-  $('rrset-edit-window-type').value = resourceRecordSet.Type.toString();
   $('rrset-edit-window-identifier').value = resourceRecordSet.SetIdentifier.toString();
   $('rrset-edit-window-weight').value = resourceRecordSet.Weight.toString();
   $('rrset-edit-window-ttl').value = resourceRecordSet.TTL.toString();
-  $('rrset-edit-window-value').value = values.join('\n');
+
+  var etype = $('rrset-edit-window-type');
+  var evalue = $('rrset-edit-window-value');
+
+  if (resourceRecordSet.AliasTarget.toString().trim()) {
+    etype.value = 'AA';
+    evalue.value = resourceRecordSet.AliasTarget.DNSName.toString();
+  } else {
+    var values = [];
+
+    for each (var member in resourceRecordSet..ResourceRecords.ResourceRecord) {
+      values.push(member.Value.toString());
+    }
+
+    etype.value = resourceRecordSet.Type.toString();
+    evalue.value = values.join('\n');
+  }
+
+  typeOnCommand();
+}
+
+function typeOnCommand() {
+  var type = $('rrset-edit-window-type').selectedItem.value;
+
+  var identifier = $('rrset-edit-window-identifier');
+  var weight = $('rrset-edit-window-weight');
+  var ttl = $('rrset-edit-window-ttl');
+
+  if (({A:1, AAAA:1, CNAME:1, TXT:1})[type]) {
+    identifier.disabled = false;
+    weight.disabled = false;
+  } else {
+    identifier.disabled = true;
+    weight.disabled = true;
+  }
+
+  ttl.disabled = (type == 'AA');
 }
 
 function onAccept() {
