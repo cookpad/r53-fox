@@ -22,17 +22,23 @@ function onLoad() {
   var resourceRecordSet = args.resourceRecordSet;
   var name = resourceRecordSet.Name.toString();
 
-  var values = [];
-
-  for each (var member in resourceRecordSet..ResourceRecords.ResourceRecord) {
-    values.push(member.Value.toString());
-  }
-
   document.title = "Detail - " + name;
   $('rrset-detail-window-name').value = name;
-  $('rrset-detail-window-type').value = resourceRecordSet.Type.toString();
   $('rrset-detail-window-identifier').value = resourceRecordSet.SetIdentifier.toString();
   $('rrset-detail-window-weight').value = resourceRecordSet.Weight.toString();
   $('rrset-detail-window-ttl').value = resourceRecordSet.TTL.toString();
-  $('rrset-detail-window-value').value = values.join('\n');
+
+  if (resourceRecordSet.AliasTarget.toString().trim()) {
+    $('rrset-detail-window-type').value = 'A (Alias)';
+    $('rrset-detail-window-value').value = resourceRecordSet.AliasTarget.DNSName.toString();
+  } else {
+    var values = [];
+
+    for each (var member in resourceRecordSet..ResourceRecords.ResourceRecord) {
+      values.push(member.Value.toString());
+    }
+
+    $('rrset-detail-window-type').value = resourceRecordSet.Type.toString();
+    $('rrset-detail-window-value').value = values.join('\n');
+  }
 }
