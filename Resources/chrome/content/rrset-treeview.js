@@ -157,10 +157,10 @@ RRSetTreeView.prototype = {
             canonicalHostedZoneNameId = member.CanonicalHostedZoneNameID.toString();
             break;
           }
+        }
 
-          if (!canonicalHostedZoneNameId) {
-            alert('Cannot get Canonical Hosted Zone Name ID.');
-          }
+        if (!canonicalHostedZoneNameId) {
+          alert('Cannot get Canonical Hosted Zone Name ID.');
         }
       }.bind(this), $('rrset-window-loader'));
 
@@ -277,9 +277,16 @@ RRSetTreeView.prototype = {
       }
 
       if (alias) {
+        var endpoint = ELBClient.getEndpoint(result.value);
+
+        if (!endpoint) {
+          alert('Cannot get ELB endpoint.');
+          return;
+        }
+
         var canonicalHostedZoneNameId = null;
 
-        $ELB(result.value, function(elbcli) {
+        $ELB(endpoint, function(elbcli) {
           var xhr = elbcli.query('DescribeLoadBalancers');
 
           for each (var member in xhr.xml()..LoadBalancerDescriptions.member) {
@@ -289,6 +296,10 @@ RRSetTreeView.prototype = {
               canonicalHostedZoneNameId = member.CanonicalHostedZoneNameID.toString();
               break;
             }
+          }
+
+          if (!canonicalHostedZoneNameId) {
+            alert('Cannot get Canonical Hosted Zone Name ID.');
           }
         }.bind(this), $('rrset-window-loader'));
 
