@@ -51,8 +51,13 @@ function onAccept() {
   var value = $V('rrset-create-window-value');
   var comment = $V('rrset-create-window-comment');
 
-  if (type != 'AA' && (!name || !ttl || !value)) {
-    alert("Please input 'Name', 'TTL' and 'Value'.");
+  if (!name || !value) {
+    alert("Please input 'Name' and 'Value'.");
+    return;
+  }
+
+  if (type != 'AA' && !ttl) {
+    alert("Please input 'TTL'.");
     return;
   }
 
@@ -65,9 +70,18 @@ function onAccept() {
     alert("Please input 'Identifier' and 'Weight'.");
   }
 
-  if (type == 'AA' && ttl) {
-    alert("A (Alias) cannot set TTL.");
-    return;
+  if (type == 'AA') {
+    if (ttl) {
+      alert("A (Alias) cannot set TTL.");
+      return;
+    }
+
+    var endpoint = ELBClient.getEndpoint(value);
+
+    if (!endpoint) {
+      alert('Cannot get ELB endpoint.');
+      return;
+    }
   }
 
   args.accepted = true;
