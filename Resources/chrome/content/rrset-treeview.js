@@ -327,12 +327,17 @@ RRSetTreeView.prototype = {
       change.ResourceRecordSet.Weight = weight;
     }
 
-    change.ResourceRecordSet.TTL = ttl;
+    if (row.AliasTarget.toString().trim()) {
+      change.ResourceRecordSet.AliasTarget.HostedZoneId = row.AliasTarget.HostedZoneId.toString();
+      change.ResourceRecordSet.AliasTarget.DNSName = row.AliasTarget.DNSName.toString();
+    } else {
+      change.ResourceRecordSet.TTL = ttl;
 
-    for (var i = 0; i < values.length; i ++) {
-      var rr = new XML('<ResourceRecord></ResourceRecord>');
-      rr.Value = values[i];
-      change.ResourceRecordSet.ResourceRecords.ResourceRecord += rr;
+      for (var i = 0; i < values.length; i ++) {
+        var rr = new XML('<ResourceRecord></ResourceRecord>');
+        rr.Value = values[i];
+        change.ResourceRecordSet.ResourceRecords.ResourceRecord += rr;
+      }
     }
 
     var xhr = null;
