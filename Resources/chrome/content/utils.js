@@ -26,7 +26,7 @@ function $(element) {
 }
 
 function $V(element) {
-  return ($(element).value || '').trim();
+  return (element.disabled ? null ; ($(element).value || '').trim());
 }
 
 function $R53(callback, loader) {
