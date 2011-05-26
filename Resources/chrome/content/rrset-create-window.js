@@ -29,7 +29,7 @@ function typeOnCommand() {
   var weight = $('rrset-create-window-weight');
   var ttl = $('rrset-create-window-ttl');
 
-  if (({A:1, AAAA:1, CNAME:1, TXT:1})[type]) {
+  if (({A:1, AA:1, AAAA:1, CNAME:1, TXT:1})[type]) {
     identifier.disabled = false;
     weight.disabled = false;
   } else {
@@ -56,7 +56,7 @@ function onAccept() {
     return;
   }
 
-  if ((identifier || weight) && !(({A:1, AAAA:1, CNAME:1, TXT:1})[type])) {
+  if ((identifier || weight) && !(({A:1, AA:1, AAAA:1, CNAME:1, TXT:1})[type])) {
     alert("Weighted resource record sets are supported only for A, AAAA, CNAME, and TXT record types.");
     return;
   }
