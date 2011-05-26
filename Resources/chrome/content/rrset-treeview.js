@@ -232,12 +232,17 @@ RRSetTreeView.prototype = {
         change_delete.ResourceRecordSet.Weight = row.Weight.toString();
       }
 
-      change_delete.ResourceRecordSet.TTL = row.TTL.toString();
+      if (row.AliasTarget.toString().trim()) {
+        change_delete.ResourceRecordSet.AliasTarget.HostedZoneId = row.AliasTarget.HostedZoneId.toString();
+        change_delete.ResourceRecordSet.AliasTarget.DNSName = row.AliasTarget.DNSName.toString();
+      } else {
+        change_delete.ResourceRecordSet.TTL = row.TTL.toString();
 
-      for (var i = 0; i < values.length; i ++) {
-        var rr = new XML('<ResourceRecord></ResourceRecord>');
-        rr.Value = values[i];
-        change_delete.ResourceRecordSet.ResourceRecords.ResourceRecord += rr;
+        for (var i = 0; i < values.length; i ++) {
+          var rr = new XML('<ResourceRecord></ResourceRecord>');
+          rr.Value = values[i];
+          change_delete.ResourceRecordSet.ResourceRecords.ResourceRecord += rr;
+        }
       }
 
       xml.ChangeBatch.Changes.Change += change_delete;
@@ -248,7 +253,9 @@ RRSetTreeView.prototype = {
       var change_create = new XML('<Change></Change>');
       change_create.Action = 'CREATE';
       change_create.ResourceRecordSet.Name = result.name;
-      change_create.ResourceRecordSet.Type = result.type;
+
+      var alias = (result.type == 'AA');
+      change_create.ResourceRecordSet.Type =  alias ? 'A' : result.type;
 
       if (result.identifier) {
         change_create.ResourceRecordSet.SetIdentifier = result.identifier;
@@ -258,14 +265,38 @@ RRSetTreeView.prototype = {
         change_create.ResourceRecordSet.Weight = result.weight;
       }
 
-      change_create.ResourceRecordSet.TTL = result.ttl;
+      if (alias) {
+        var canonicalHostedZoneNameId = null;
 
-      var values = result.value.split(/\n+/);
+        $ELB(result.value, function(elbcli) {
+          var xhr = elbcli.query('DescribeLoadBalancers');
 
-      for (var i = 0; i < values.length; i ++) {
-        var rr = new XML('<ResourceRecord></ResourceRecord>');
-        rr.Value = values[i];
-        change_create.ResourceRecordSet.ResourceRecords.ResourceRecord += rr;
+          for each (var member in xhr.xml()..LoadBalancerDescriptions.member) {
+            var r = new RegExp(member.DNSName.toString().replace(/\./g, '\\.'));
+
+            if (r.test(result.value)) {
+              canonicalHostedZoneNameId = member.CanonicalHostedZoneNameID.toString();
+              break;
+            }
+          }
+        }.bind(this), $('rrset-window-loader'));
+
+        if (!canonicalHostedZoneNameId) {
+          return;
+        }
+
+        change_create.ResourceRecordSet.AliasTarget.HostedZoneId = canonicalHostedZoneNameId;
+        change_create.ResourceRecordSet.AliasTarget.DNSName = result.value;
+      } else {
+        change_create.ResourceRecordSet.TTL = result.ttl;
+
+        var values = result.value.split(/\n+/);
+
+        for (var i = 0; i < values.length; i ++) {
+          var rr = new XML('<ResourceRecord></ResourceRecord>');
+          rr.Value = values[i];
+          change_create.ResourceRecordSet.ResourceRecords.ResourceRecord += rr;
+        }
       }
 
       xml.ChangeBatch.Changes.Change += change_create;
