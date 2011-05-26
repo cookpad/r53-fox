@@ -22,6 +22,24 @@ function onLoad() {
   $('rrset-create-window-name').value = '.' + hostedZoneName;
 }
 
+function typeOnCommand() {
+  var type = $('rrset-create-window-type').selectedItem.value;
+
+  var identifier = $('rrset-create-window-identifier');
+  var weight = $('rrset-create-window-weight');
+  var ttl = $('rrset-create-window-ttl');
+
+  if (({A:1, AAAA:1, CNAME:1, TXT:1})[type]) {
+    identifier.disabled = false;
+    weight.disabled = false;
+  } else {
+    identifier.disabled = true;
+    weight.disabled = true;
+  }
+
+  ttl.disabled = (type == 'AA');
+}
+
 function onAccept() {
   var args = window.arguments[0];
 
