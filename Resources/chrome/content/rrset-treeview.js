@@ -125,7 +125,9 @@ RRSetTreeView.prototype = {
     var change = xml.ChangeBatch.Changes.Change;
     change.Action = 'CREATE';
     change.ResourceRecordSet.Name = result.name;
-    change.ResourceRecordSet.Type = result.type;
+
+    var alias = (result.type == 'AA');
+    change.ResourceRecordSet.Type =  alias ? 'A' : result.type;
 
     if (result.identifier) {
       change.ResourceRecordSet.SetIdentifier = result.identifier;
@@ -135,14 +137,38 @@ RRSetTreeView.prototype = {
       change.ResourceRecordSet.Weight = result.weight;
     }
 
-    change.ResourceRecordSet.TTL = result.ttl;
+    if (alias) {
+      var canonicalHostedZoneNameId = null;
 
-    var values = result.value.split(/\n+/);
+      $ELB(result.value, function(elbcli) {
+        var xhr = elbcli.query('DescribeLoadBalancers');
 
-    for (var i = 0; i < values.length; i ++) {
-      var rr = new XML('<ResourceRecord></ResourceRecord>');
-      rr.Value = values[i];
-      change.ResourceRecordSet.ResourceRecords.ResourceRecord += rr;
+        for each (var member in xhr.xml()..LoadBalancerDescriptions.member) {
+          var r = new RegExp(member.DNSName.toString().replace(/\./g, '\\.'));
+
+          if (r.test(result.value)) {
+            canonicalHostedZoneNameId = member.CanonicalHostedZoneNameID.toString();
+            break;
+          }
+        }
+      }.bind(this), $('rrset-window-loader'));
+
+      if (!canonicalHostedZoneNameId) {
+        return;
+      }
+
+      change.ResourceRecordSet.AliasTarget.HostedZoneId = canonicalHostedZoneNameId;
+      change.ResourceRecordSet.AliasTarget.DNSName = result.value;
+    } else {
+      change.ResourceRecordSet.TTL = result.ttl;
+
+      var values = result.value.split(/\n+/);
+
+      for (var i = 0; i < values.length; i ++) {
+        var rr = new XML('<ResourceRecord></ResourceRecord>');
+        rr.Value = values[i];
+        change.ResourceRecordSet.ResourceRecords.ResourceRecord += rr;
+      }
     }
 
     var xhr = null;
