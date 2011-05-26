@@ -82,20 +82,13 @@ function $R53(callback, loader) {
   });
 }
 
-function $ELB(url, callback, loader) {
+function $ELB(endpoint, callback, loader) {
   var accessKeyId = Prefs.accessKeyId;
   var secretAccessKey = Prefs.secretAccessKey;
   var algorythm = Prefs.algorythm;
 
   if (!accessKeyId || !secretAccessKey) {
     return null;
-  }
-
-  var endpoint = ELBClient.getEndpoint(url);
-
-  if (!endpoint) {
-    alert('Cannot get ELB endpoint.');
-    return;
   }
 
   var elbcli = new ELBClient(window, accessKeyId, secretAccessKey, algorythm, endpoint);
