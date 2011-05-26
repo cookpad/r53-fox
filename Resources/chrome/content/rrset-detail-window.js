@@ -28,9 +28,12 @@ function onLoad() {
   $('rrset-detail-window-weight').value = resourceRecordSet.Weight.toString();
   $('rrset-detail-window-ttl').value = resourceRecordSet.TTL.toString();
 
+  var etype = $('rrset-detail-window-type');
+  var evalue = $('rrset-detail-window-value');
+
   if (resourceRecordSet.AliasTarget.toString().trim()) {
-    $('rrset-detail-window-type').value = 'A (Alias)';
-    $('rrset-detail-window-value').value = resourceRecordSet.AliasTarget.DNSName.toString();
+    etype.value = 'A (Alias)';
+    evalue.value = resourceRecordSet.AliasTarget.DNSName.toString();
   } else {
     var values = [];
 
@@ -38,7 +41,7 @@ function onLoad() {
       values.push(member.Value.toString());
     }
 
-    $('rrset-detail-window-type').value = resourceRecordSet.Type.toString();
-    $('rrset-detail-window-value').value = values.join('\n');
+    etype.value = resourceRecordSet.Type.toString();
+    evalue.value = values.join('\n');
   }
 }
