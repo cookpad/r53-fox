@@ -26,7 +26,13 @@ function $(element) {
 }
 
 function $V(element) {
-  return (element.disabled ? null ; ($(element).value || '').trim());
+  element = $(element);
+
+  if (!element || element.disabled) {
+    return '';
+  } else {
+    return (element.value || '').trim();
+  }
 }
 
 function $R53(callback, loader) {
