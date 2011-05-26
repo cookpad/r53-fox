@@ -44,8 +44,8 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
         </row>
         <row>
           <label control="rrset-create-window-type" value="Type" />
-          <menulist id="rrset-create-window-type">
-            <menupopup oncommand="typeOnCommand();">
+          <menulist id="rrset-create-window-type" oncommand="typeOnCommand();">
+            <menupopup>
               <menuitem label="A" value="A" />
               <menuitem label="A (Alias)" value="AA" />
               <menuitem label="AAAA" value="AAAA" />
