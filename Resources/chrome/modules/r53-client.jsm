@@ -38,7 +38,7 @@ function b64_hmac_sha256(key, data) {
   return rstr2b64(str);
 }
 
-// classs R53Client
+// class R53Client
 function R53Client(window, accessKeyId, secretAccessKey, algorythm) {
   this.window = window;
   this.accessKeyId = accessKeyId;
@@ -245,5 +245,4 @@ R53Client.prototype = {
     var base = 'https://' + this.HOST + '/' + this.API_VERSION + '/';
     return base + Array.prototype.join.call(arguments, '/');
   }
-}
-
+};
