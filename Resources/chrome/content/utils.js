@@ -18,6 +18,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 
 Components.utils.import('resource://r53fox/r53-client.jsm');
+Components.utils.import('resource://r53fox/elb-client.jsm');
 Components.utils.import('resource://r53fox/preferences.jsm');
 
 function $(element) {
@@ -56,6 +57,60 @@ function $R53(callback, loader) {
 
   var callback_with_client = function() {
     callback(r53cli);
+  };
+
+  if (loader) {
+    var callback_with_client_orig = callback_with_client;
+
+    callback_with_client = function() {
+      return progress(loader, callback_with_client_orig);
+    };
+  }
+
+  return protect(callback_with_client, function(e) {
+    if (typeof(e) == 'xml') {
+      openModalDialog('error-dialog', {error:(e..Error)});
+    } else {
+      alert(e);
+    }
+  });
+}
+
+function $ELB(url, callback, loader) {
+  var accessKeyId = Prefs.accessKeyId;
+  var secretAccessKey = Prefs.secretAccessKey;
+  var algorythm = Prefs.algorythm;
+
+  if (!accessKeyId || !secretAccessKey) {
+    return null;
+  }
+
+  var endpoint = ELBClient.getEndpoint(url);
+
+  if (!endpoint) {
+    alert('Cannot get ELB endpoint.');
+    return;
+  }
+
+  var elbcli = new ELBClient(window, accessKeyId, secretAccessKey, algorythm, endpoint);
+  var query_orig = elbcli.query;
+
+  elbcli.query = function() {
+    var xhr = query_orig.apply(elbcli, arguments);
+
+    if (!xhr.success()) {
+      throw xhr.xml();
+    }
+
+    return xhr;
+  }
+
+  if (!callback) {
+    return elbcli;
+  }
+
+  var callback_with_client = function() {
+    callback(elbcli);
   };
 
   if (loader) {
