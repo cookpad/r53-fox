@@ -47,7 +47,7 @@ function onAccept() {
   var value = $V('rrset-edit-window-value');
   var comment = $V('rrset-edit-window-comment');
 
-  if (!name || !ttl || !value) {
+  if (type != 'AA' && (!name || !ttl || !value)) {
     alert("Please input 'Name', 'TTL' and 'Value'.");
     return;
   }
@@ -59,6 +59,11 @@ function onAccept() {
 
   if ((identifier && !weight) || (!identifier && weight)) {
     alert("Please input 'Identifier' and 'Weight'.");
+  }
+
+  if (type == 'AA' && ttl) {
+    alert("A (Alias) cannot set TTL.");
+    return;
   }
 
   args.accepted = true;
