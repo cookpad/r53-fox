@@ -151,7 +151,7 @@ RRSetTreeView.prototype = {
         var xhr = elbcli.query('DescribeLoadBalancers');
 
         for each (var member in xhr.xml()..LoadBalancerDescriptions.member) {
-          var r = new RegExp(member.DNSName.toString().replace(/\./g, '\\.'));
+          var r = new RegExp('^' + member.DNSName.toString().replace(/\./g, '\\.') + '\\.?$');
 
           if (r.test(result.value)) {
             canonicalHostedZoneNameId = member.CanonicalHostedZoneNameID.toString();
@@ -260,6 +260,8 @@ RRSetTreeView.prototype = {
     })();
 
     // CREATE
+    var error_happened = false;
+
     (function() {
       var change_create = new XML('<Change></Change>');
       change_create.Action = 'CREATE';
@@ -281,6 +283,7 @@ RRSetTreeView.prototype = {
 
         if (!endpoint) {
           alert('Cannot get ELB endpoint.');
+          error_happened = true;
           return;
         }
 
@@ -290,7 +293,7 @@ RRSetTreeView.prototype = {
           var xhr = elbcli.query('DescribeLoadBalancers');
 
           for each (var member in xhr.xml()..LoadBalancerDescriptions.member) {
-            var r = new RegExp(member.DNSName.toString().replace(/\./g, '\\.'));
+            var r = new RegExp('^' + member.DNSName.toString().replace(/\./g, '\\.') + '\\.?$');
 
             if (r.test(result.value)) {
               canonicalHostedZoneNameId = member.CanonicalHostedZoneNameID.toString();
@@ -304,6 +307,7 @@ RRSetTreeView.prototype = {
         }.bind(this), $('rrset-window-loader'));
 
         if (!canonicalHostedZoneNameId) {
+          error_happened = true;
           return;
         }
 
@@ -323,6 +327,10 @@ RRSetTreeView.prototype = {
 
       xml.ChangeBatch.Changes.Change += change_create;
     })();
+
+    if (error_happened) {
+      return;
+    }
 
     var xhr = null;
 
