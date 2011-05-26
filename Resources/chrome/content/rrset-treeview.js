@@ -31,7 +31,14 @@ function RRSetTreeView(hostedZoneId, hostedZoneName) {
 
 RRSetTreeView.prototype = {
   getCellText: function(row, column) {
-    return $CELL(this.printRows[row], column.id);
+    var row = this.printRows[row];
+    var text = $CELL(row, column.id);
+
+    if (/Type$/.test(column.id.toString()) && row.AliasTarget.toString()) {
+      text = 'A (Alias)';
+    }
+
+    return text;
   },
 
   setTree: function(tree) {
