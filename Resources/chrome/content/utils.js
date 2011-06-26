@@ -296,3 +296,8 @@ Array.prototype.uniq = function() {
 
   return array;
 };
+
+function createFilePicker() {
+  var nsIFilePicker = Components.interfaces.nsIFilePicker;
+  return Components.classes['@mozilla.org/filepicker;1'].createInstance(nsIFilePicker);
+}
