@@ -1,5 +1,5 @@
 #!/bin/sh
-VERSION=0.1.7-2
+VERSION=0.1.8
 SRC_DIR=r53-fox_win
 
 rm -rf $SRC_DIR *setup.exe
