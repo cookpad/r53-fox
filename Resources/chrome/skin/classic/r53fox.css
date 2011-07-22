@@ -37,10 +37,6 @@ spacer.statusbar {
   list-style-image: url('menuicon.png');
 }
 
-menuitem {
-  color: black;
-}
-
 treechildren::-moz-tree-checkbox(checked) {
   list-style-image: url(chrome://global/skin/checkbox/cbox-check.gif);
 }
