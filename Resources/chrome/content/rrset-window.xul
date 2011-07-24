@@ -55,7 +55,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
         <splitter class="tree-splitter" />
         <treecol id="rrset-tree.Type" label="Type" flex="1" persist="width ordinal hidden sortDirection" />
         <splitter class="tree-splitter" />
-        <treecol id="rrset-tree.SetIdentifier" label="Identifier" flex="1" persist="width ordinal hidden sortDirection" />
+        <treecol id="rrset-tree.SetIdentifier" label="SetIdentifier" flex="1" persist="width ordinal hidden sortDirection" />
         <splitter class="tree-splitter" />
         <treecol id="rrset-tree.Weight" label="Weight" flex="1" persist="width ordinal hidden sortDirection" />
         <splitter class="tree-splitter" />
