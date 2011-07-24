@@ -23,7 +23,7 @@ var prefs = Components.classes['@mozilla.org/preferences;1'].getService(Componen
 prefs = prefs.getBranch('r53fox.');
 
 var Prefs = {
-  version: '0.1.9',
+  version: '0.1.9-1',
 
   get currentUser() {
     return prefs.getCharPref('currentUser', null);
