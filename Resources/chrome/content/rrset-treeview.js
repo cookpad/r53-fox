@@ -336,16 +336,7 @@ RRSetTreeView.prototype = {
     var result = openModalDialog('rrset-delete-dialog', {name:name});
     if (!result) { return; }
 
-    var type = row.Type.toString();
-    var identifier = row.SetIdentifier.toString().trim();
-    var weight = row.Weight.toString().trim();
-    var ttl = row.TTL.toString();
-    var values = [];
     var comment = result.comment;
-
-    for each (var member in row..ResourceRecords.ResourceRecord) {
-      values.push(member.Value.toString());
-    }
 
     var xml = <ChangeResourceRecordSetsRequest xmlns="https://route53.amazonaws.com/doc/2011-05-05/"></ChangeResourceRecordSetsRequest>;
 
@@ -355,29 +346,7 @@ RRSetTreeView.prototype = {
 
     var change = xml.ChangeBatch.Changes.Change;
     change.Action = 'DELETE';
-    change.ResourceRecordSet.Name = name;
-    change.ResourceRecordSet.Type = type;
-
-    if (identifier) {
-      change.ResourceRecordSet.SetIdentifier = identifier;
-    }
-
-    if (weight) {
-      change.ResourceRecordSet.Weight = weight;
-    }
-
-    if (row.AliasTarget.toString().trim()) {
-      change.ResourceRecordSet.AliasTarget.HostedZoneId = row.AliasTarget.HostedZoneId.toString();
-      change.ResourceRecordSet.AliasTarget.DNSName = row.AliasTarget.DNSName.toString();
-    } else {
-      change.ResourceRecordSet.TTL = ttl;
-
-      for (var i = 0; i < values.length; i ++) {
-        var rr = new XML('<ResourceRecord></ResourceRecord>');
-        rr.Value = values[i];
-        change.ResourceRecordSet.ResourceRecords.ResourceRecord += rr;
-      }
-    }
+    change.ResourceRecordSet = row;
 
     var xhr = null;
 
