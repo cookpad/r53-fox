@@ -29,5 +29,5 @@ function onDialogAccept() {
   args.accepted = true;
   args.result = {comment:comment};
 
-  return true;
+  close();
 }

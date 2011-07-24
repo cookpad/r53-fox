@@ -22,12 +22,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 -->
 
-<dialog xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
-  title="Delete Resource Record Set"
-  buttons="accept,cancel"
-  ondialogaccept="return onDialogAccept();"
-  ondialogcancel="return true;"
-  onload="onLoad();"
+<window  xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+  id="rrset-delete-dialog" title="Delete Resource Record Set" onload="onLoad();"
   width="350" height="250">
 
   <!-- scripts -->
@@ -41,5 +37,10 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
     </description>
     <label control="rrset-delete-dialog-comment" value="Comment (option)" />
     <textbox id="rrset-delete-dialog-comment" multiline="true" flex="1" />
+    <hbox>
+      <spacer flex="1" />
+      <button label="OK" oncommand="onDialogAccept();" />
+      <button label="Cancel" oncommand="close();" />
+    </hbox>
   </vbox>
-</dialog>
+</window>
