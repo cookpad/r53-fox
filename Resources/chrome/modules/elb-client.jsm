@@ -56,6 +56,8 @@ function ELBClient(window, accessKeyId, secretAccessKey, algorythm, endpoint) {
 }
 
 ELBClient.getEndpoint = function(url) {
+  url = (url || '').toLowerCase();
+
   for (var i in ENDPOINTS) {
     var r = new RegExp(i.replace(/\./g, '\\.')+ '\\.?$');
 
