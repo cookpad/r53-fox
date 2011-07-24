@@ -229,13 +229,42 @@ RRSetTreeView.prototype = {
       xml.ChangeBatch.Comment = result.comment;
     }
 
+    var alias = (result.type == 'AA');
+    var ttl_is_changed = ((row.TTL.toString() != result.ttl) && !alias);
+
+    var other_rows = [];
+
+    for (var i = 0; i < this.rows.length; i++) {
+      if (row.Name.toString() != this.rows[i].Name.toString()) {
+        continue;
+      }
+
+      if (row.Type.toString() != this.rows[i].Type.toString()) {
+        continue;
+      }
+
+      if (row.SetIdentifier.toString() == this.rows[i].SetIdentifier.toString()) {
+        continue;
+      }
+
+      other_rows.push(this.rows[i]);
+    }
+
     // DELETE
-    (function() {
+    function editRRSet_delete(delete_row) {
       var change_delete = new XML('<Change></Change>');
       change_delete.Action = 'DELETE';
-      change_delete.ResourceRecordSet = row;
+      change_delete.ResourceRecordSet = delete_row;
       xml.ChangeBatch.Changes.Change += change_delete;
-    })();
+    }
+
+    editRRSet_delete(row);
+
+    if (ttl_is_changed) {
+      for (var i = 0; i < other_rows.length; i++) {
+        editRRSet_delete(other_rows[i]);
+      }
+    }
 
     // CREATE
     var error_happened = false;
@@ -245,7 +274,6 @@ RRSetTreeView.prototype = {
       change_create.Action = 'CREATE';
       change_create.ResourceRecordSet.Name = result.name;
 
-      var alias = (result.type == 'AA');
       change_create.ResourceRecordSet.Type =  alias ? 'A' : result.type;
 
       if (result.identifier) {
@@ -305,6 +333,16 @@ RRSetTreeView.prototype = {
 
       xml.ChangeBatch.Changes.Change += change_create;
     })();
+
+    if (ttl_is_changed) {
+      for (var i = 0; i < other_rows.length; i++) {
+        var rrset_src = other_rows[i].toString().replace(/<TTL>[^<]+<\/TTL>/im, function(m) {
+          return '<TTL>' + result.ttl + '</TTL>';
+        });
+
+        xml.ChangeBatch.Changes.Change += new XML('<Change><Action>CREATE</Action>' + rrset_src + '</Change>');
+      }
+    }
 
     if (error_happened) {
       return;
