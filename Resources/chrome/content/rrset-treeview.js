@@ -231,38 +231,9 @@ RRSetTreeView.prototype = {
 
     // DELETE
     (function() {
-      var values = [];
-
-      for each (var member in row..ResourceRecords.ResourceRecord) {
-        values.push(member.Value.toString());
-      }
-
       var change_delete = new XML('<Change></Change>');
       change_delete.Action = 'DELETE';
-      change_delete.ResourceRecordSet.Name = row.Name.toString();
-      change_delete.ResourceRecordSet.Type = row.Type.toString();
-
-      if (row.SetIdentifier.toString().trim()) {
-        change_delete.ResourceRecordSet.SetIdentifier = row.SetIdentifier.toString();
-      }
-
-      if (row.Weight.toString().trim()) {
-        change_delete.ResourceRecordSet.Weight = row.Weight.toString();
-      }
-
-      if (row.AliasTarget.toString().trim()) {
-        change_delete.ResourceRecordSet.AliasTarget.HostedZoneId = row.AliasTarget.HostedZoneId.toString();
-        change_delete.ResourceRecordSet.AliasTarget.DNSName = row.AliasTarget.DNSName.toString();
-      } else {
-        change_delete.ResourceRecordSet.TTL = row.TTL.toString();
-
-        for (var i = 0; i < values.length; i ++) {
-          var rr = new XML('<ResourceRecord></ResourceRecord>');
-          rr.Value = values[i];
-          change_delete.ResourceRecordSet.ResourceRecords.ResourceRecord += rr;
-        }
-      }
-
+      change_delete.ResourceRecordSet = row;
       xml.ChangeBatch.Changes.Change += change_delete;
     })();
 
