@@ -19,7 +19,10 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 function onLoad() {
   var name = window.arguments[0].name;
-  document.title = "Delete - " + name;
+
+  if (name) {
+    document.title = "Delete - " + name;
+  }
 }
 
 function onDialogAccept() {

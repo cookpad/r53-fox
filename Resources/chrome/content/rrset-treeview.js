@@ -116,7 +116,30 @@ RRSetTreeView.prototype = {
 
   selectedRow: function() {
     var idx = this.selection.currentIndex;
-    return (idx != -1) ? this.printRows[idx] : null;
+
+    if (idx != -1) {
+      this.selection.select(idx);
+      return this.printRows[idx];
+    } else {
+      return null;
+    }
+  },
+
+  selectedMultipleRows: function() {
+    var rows = [];
+    var start = {};
+    var end = {};
+    var numRanges = this.selection.getRangeCount();
+
+    for (var t = 0; t < numRanges; t++) {
+      this.selection.getRangeAt(t, start, end);
+
+      for (var v = start.value; v <= end.value; v++) {
+        rows.push(this.printRows[v]);
+      }
+    }
+
+    return rows;
   },
 
   createRRSet: function() {
@@ -357,10 +380,10 @@ RRSetTreeView.prototype = {
   },
 
   deleteRRSet: function() {
-    var row = this.selectedRow();
-    if (!row) { return; }
+    var selectedRows = this.selectedMultipleRows();
+    if (!selectedRows || selectedRows.length < 1) { return; }
 
-    var name = row.Name.toString();
+    var name = (selectedRows.length == 1) ? selectedRows[0].Name.toString() : '';
 
     var result = openModalDialog('rrset-delete-dialog', {name:name});
     if (!result) { return; }
@@ -373,9 +396,16 @@ RRSetTreeView.prototype = {
       xml.ChangeBatch.Comment = comment;
     }
 
-    var change = xml.ChangeBatch.Changes.Change;
-    change.Action = 'DELETE';
-    change.ResourceRecordSet = row;
+    function deleteRRSet_delete(delete_row) {
+      var change_delete = new XML('<Change></Change>');
+      change_delete.Action = 'DELETE';
+      change_delete.ResourceRecordSet = delete_row;
+      xml.ChangeBatch.Changes.Change += change_delete;
+    }
+
+    for (var i = 0; i < selectedRows.length; i++) {
+      deleteRRSet_delete(selectedRows[i]);
+    }
 
     var xhr = null;
 
