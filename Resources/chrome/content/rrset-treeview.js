@@ -327,16 +327,16 @@ RRSetTreeView.prototype = {
       xml.ChangeBatch.Changes.Change += change_create;
     })();
 
+    if (error_happened) {
+      return;
+    }
+
     for (var i = 0; ttl_is_changed && i < other_rows.length; i++) {
       var rrset_src = other_rows[i].toString().replace(/<TTL>[^<]+<\/TTL>/im, function(m) {
         return '<TTL>' + result.ttl + '</TTL>';
       });
 
       xml.ChangeBatch.Changes.Change += new XML('<Change><Action>CREATE</Action>' + rrset_src + '</Change>');
-    }
-
-    if (error_happened) {
-      return;
     }
 
     var xhr = null;
