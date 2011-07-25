@@ -234,16 +234,11 @@ RRSetTreeView.prototype = {
 
     var other_rows = [];
 
-    for (var i = 0; i < this.rows.length; i++) {
-      if (row.Name.toString() != this.rows[i].Name.toString()) {
-        continue;
-      }
-
-      if (row.Type.toString() != this.rows[i].Type.toString()) {
-        continue;
-      }
-
-      if (row.SetIdentifier.toString() == this.rows[i].SetIdentifier.toString()) {
+    for (var i = 0; ttl_is_changed && i < this.rows.length; i++) {
+      if ((row.Name.toString() != this.rows[i].Name.toString()) ||
+          (this.rows[i].AliasTarget.toString().trim()) ||
+          (row.Type.toString() != this.rows[i].Type.toString()) ||
+          (row.SetIdentifier.toString() == this.rows[i].SetIdentifier.toString())) {
         continue;
       }
 
@@ -260,10 +255,8 @@ RRSetTreeView.prototype = {
 
     editRRSet_delete(row);
 
-    if (ttl_is_changed) {
-      for (var i = 0; i < other_rows.length; i++) {
-        editRRSet_delete(other_rows[i]);
-      }
+    for (var i = 0; ttl_is_changed && i < other_rows.length; i++) {
+      editRRSet_delete(other_rows[i]);
     }
 
     // CREATE
@@ -334,14 +327,12 @@ RRSetTreeView.prototype = {
       xml.ChangeBatch.Changes.Change += change_create;
     })();
 
-    if (ttl_is_changed) {
-      for (var i = 0; i < other_rows.length; i++) {
-        var rrset_src = other_rows[i].toString().replace(/<TTL>[^<]+<\/TTL>/im, function(m) {
-          return '<TTL>' + result.ttl + '</TTL>';
-        });
+    for (var i = 0; ttl_is_changed && i < other_rows.length; i++) {
+      var rrset_src = other_rows[i].toString().replace(/<TTL>[^<]+<\/TTL>/im, function(m) {
+        return '<TTL>' + result.ttl + '</TTL>';
+      });
 
-        xml.ChangeBatch.Changes.Change += new XML('<Change><Action>CREATE</Action>' + rrset_src + '</Change>');
-      }
+      xml.ChangeBatch.Changes.Change += new XML('<Change><Action>CREATE</Action>' + rrset_src + '</Change>');
     }
 
     if (error_happened) {
