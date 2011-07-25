@@ -50,8 +50,8 @@ Exporter.prototype = {
     $R53(function(r53cli) {
       var xhr = r53cli.listHostedZones();
       for each (var member in xhr.xml()..HostedZones.HostedZone) {
-        data[basehzid(member.Id.toString())] = {
-          Name: member.Name.toString(),
+        data[member.Name.toString()] = {
+          HostedZoneId: basehzid(member.Id.toString()),
           CallerReference: member.CallerReference.toString(),
           Comment: member.Config.Comment.toString(),
           ResourceRecordSets: []
@@ -59,8 +59,9 @@ Exporter.prototype = {
       }
     }.bind(this), $('main-window-loader'));
 
-    for (var hzid in data) {
-      var rrsets = data[hzid].ResourceRecordSets;
+    for (var name in data) {
+      var rrsets = data[name].ResourceRecordSets;
+      var hzid = data[name].HostedZoneId;
 
       $R53(function(r53cli) {
         var xhr = r53cli.listResourceRecordSets(hzid);
@@ -70,7 +71,7 @@ Exporter.prototype = {
 
           var row = {
             Name: member.Name.toString(),
-            Identifier: member.SetIdentifier.toString(),
+            SetIdentifier: member.SetIdentifier.toString(),
             Weight: member.Weight.toString(),
             TTL: member.TTL.toString(),
             Value: values
