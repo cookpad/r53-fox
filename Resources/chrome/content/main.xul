@@ -29,6 +29,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
   <!-- scripts -->
   <script src="utils.js" />
+  <script src="importer.js" />
   <script src="exporter.js" />
   <script src="main.js" />
 
@@ -41,6 +42,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
     <menubar>
       <menu label="File">
         <menupopup>
+          <menuitem label="Import Data from JSON" oncommand="$imp.importData();" />
           <menuitem label="Export Data to JSON" oncommand="$exp.exportData();" />
           <menuseparator />
           <menuitem label="Exit" oncommand="window.close();" />

@@ -73,6 +73,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
       <button label="Create" oncommand="$view.createHostedZone();" />
       <button label="Refresh" oncommand="$view.refresh();" />
       <spacer flex="1" />
+      <button label="Import" oncommand="$imp.importData();" />
       <button label="Export" oncommand="$exp.exportData();" />
       <button label="Account" oncommand="editAccount();" />
     </hbox>
