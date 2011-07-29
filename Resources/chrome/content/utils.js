@@ -297,12 +297,21 @@ Array.prototype.uniq = function() {
   return array;
 };
 
-function createFilePicker() {
+function createFilePicker(name, initializer) {
   if (!window.$cachedPicker) {
-    var nsIFilePicker = Components.interfaces.nsIFilePicker;
-    var picker =  Components.classes['@mozilla.org/filepicker;1'].createInstance(nsIFilePicker);
-    window.$cachedPicker = picker;
+    window.$cachedPicker = {};
   }
 
-  return window.$cachedPicker;
+  if (!window.$cachedPicker[name]) {
+    var nsIFilePicker = Components.interfaces.nsIFilePicker;
+    var picker =  Components.classes['@mozilla.org/filepicker;1'].createInstance(nsIFilePicker);
+
+    if (initializer) {
+      initializer(picker);
+    }
+
+    window.$cachedPicker[name] = picker;
+  }
+
+  return window.$cachedPicker[name];
 }

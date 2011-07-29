@@ -24,10 +24,12 @@ function Importer() {
 
 Importer.prototype = {
   importData: function() {
-    var fp = createFilePicker();
+    var fp = createFilePicker('impexp', function(picker) {
+      picker.defaultString = 'zones.json';
+      picker.appendFilter('*.json', '*.json');
+    });
+
     fp.init(window, 'Import Data from JSON', Components.interfaces.nsIFilePicker.modeOpen);
-    fp.defaultString = 'zones.json';
-    fp.appendFilter('JSON (*.json)', '*.json');
 
     var result = fp.show();
 

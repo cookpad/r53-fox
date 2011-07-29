@@ -24,10 +24,12 @@ function Exporter() {
 
 Exporter.prototype = {
   exportData: function() {
-    var fp = createFilePicker();
+    var fp = createFilePicker('impexp', function(picker) {
+      picker.defaultString = 'zones.json';
+      picker.appendFilter('*.json', '*.json');
+    });
+
     fp.init(window, 'Export Data to JSON', Components.interfaces.nsIFilePicker.modeSave);
-    fp.defaultString = 'zones.json';
-    fp.appendFilter('JSON (*.json)', '*.json');
 
     var result = fp.show();
 
