@@ -45,7 +45,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
   <!-- body -->
   <vbox id="rrset-treebox" class="content" flex="1">
     <hbox>
-      Search:
+      RegExp Search:
       <textbox id="rrset-tree-filter" oninput="$view.invalidate();" />
       <button label="Clear" oncommand="with($('rrset-tree-filter')) { value = ''; oninput(); }" />
     </hbox>
