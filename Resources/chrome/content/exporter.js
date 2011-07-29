@@ -68,14 +68,20 @@ Exporter.prototype = {
 
         for each (var member in xhr.xml()..ResourceRecordSets.ResourceRecordSet) {
           var values = [];
+          var name = member.Name.toString();
 
           var row = {
-            Name: member.Name.toString(),
             SetIdentifier: member.SetIdentifier.toString(),
             Weight: member.Weight.toString(),
             TTL: member.TTL.toString(),
             Value: values
           };
+
+          try {
+            row.Name = eval('"' + name + '"');
+          } catch (e) {
+            row.Name = name;
+          }
 
           if (member.AliasTarget.toString().trim()) {
             row.Type = 'A (Alias)';
