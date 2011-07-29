@@ -298,6 +298,11 @@ Array.prototype.uniq = function() {
 };
 
 function createFilePicker() {
-  var nsIFilePicker = Components.interfaces.nsIFilePicker;
-  return Components.classes['@mozilla.org/filepicker;1'].createInstance(nsIFilePicker);
+  if (!window.$cachedPicker) {
+    var nsIFilePicker = Components.interfaces.nsIFilePicker;
+    var picker =  Components.classes['@mozilla.org/filepicker;1'].createInstance(nsIFilePicker);
+    window.$cachedPicker = picker;
+  }
+
+  return window.$cachedPicker;
 }
