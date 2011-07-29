@@ -35,6 +35,7 @@ Importer.prototype = {
     case Components.interfaces.nsIFilePicker.returnOK:
     case Components.interfaces.nsIFilePicker.returnReplace:
       this.readDataFromFile(fp.file);
+      $view.refresh();
       break;
     }
   },
@@ -65,16 +66,20 @@ Importer.prototype = {
         if (row) {
           hzid = row.HostedZoneId;
         } else {
-          hzid = this.createHostedZone(name, new_row.CallerReference, new_row.Comment);
+          hzid = this.createHostedZone(name, new_row.Comment);
+        }
+
+        if (!hzid) {
+          return false;
         }
 
         var rrsets = ((row || {}).ResourceRecordSets || []);
         var new_rrsets = (new_row.ResourceRecordSets || []);
 
-        this.createRRSets(hzid, rrsets, new_rrsets);
+        if (!this.createRRSets(hzid, rrsets, new_rrsets)) {
+          return false;
+        }
       }
-
-      $view.refresh();
     } catch (e) {
       alert(e);
       return false;
@@ -105,14 +110,20 @@ Importer.prototype = {
 
         for each (var member in xhr.xml()..ResourceRecordSets.ResourceRecordSet) {
           var values = [];
+          var name = member.Name.toString();
 
           var row = {
-            Name: member.Name.toString(),
             SetIdentifier: member.SetIdentifier.toString(),
             Weight: member.Weight.toString(),
             TTL: member.TTL.toString(),
             Value: values
           };
+
+          try {
+            row.Name = eval('"' + name + '"');
+          } catch (e) {
+            row.Name = name;
+          }
 
           if (member.AliasTarget.toString().trim()) {
             row.Type = 'A (Alias)';
@@ -133,26 +144,126 @@ Importer.prototype = {
     return data;
   },
 
-  createHostedZone: function(name, caller_ref, comment) {
+  createHostedZone: function(name, comment) {
     var xml = <CreateHostedZoneRequest xmlns="https://route53.amazonaws.com/doc/2011-05-05/"></CreateHostedZoneRequest>;
     xml.Name = name;
-    xml.CallerReference = (caller_ref || ['CreateHostedZone', name, (new Date()).toString()].join(', '));
+    xml.CallerReference = ['CreateHostedZone', name, (new Date()).toString()].join(', ');
 
     if (comment) {
       xml.HostedZoneConfig.Comment = comment;
     }
 
-    var hzid = null;
+    var xhr = null;
 
     $R53(function(r53cli) {
-      var xhr = r53cli.createHostedZone('<?xml version="1.0" encoding="UTF-8"?>' + xml);
-      hzid = this.basehzid(xhr.xml().HostedZone.Id.toString());
+      xhr = r53cli.createHostedZone('<?xml version="1.0" encoding="UTF-8"?>' + xml);
     }.bind(this), $('main-window-loader'));
 
-    return hzid;
+    return (xhr && xhr.success()) ? this.basehzid(xhr.xml().HostedZone.Id.toString()) : null;
   },
 
   createRRSets: function(hzid, rrsets, new_rrsets) {
+    var rows = {};
+    var change_count = 0;
+
+    for (var i = 0; i < rrsets.length; i ++) {
+      var row = rrsets[i];
+      var row_id = row.Name + ' ' + row.Type + ' ' + row.SetIdentifier;
+      rows[row_id] = row;
+    }
+
+    var xml = <ChangeResourceRecordSetsRequest xmlns="https://route53.amazonaws.com/doc/2011-05-05/"></ChangeResourceRecordSetsRequest>;
+
+    for (var i = 0; i < new_rrsets.length; i++) {
+      var new_row = new_rrsets[i];
+
+      if (({NS:1, SOA:1})[new_row.Type]) {
+        continue;
+      }
+
+      var new_row_id = new_row.Name + ' ' + new_row.Type + ' ' + new_row.SetIdentifier;
+
+      if (!rows[new_row_id]) {
+        if (!this.appendChange(new_row, xml)) { return(false); }
+        change_count++;
+      }
+    }
+
+    if (change_count < 1) {
+      return true;
+    }
+
+    var xhr = null;
+
+    $R53(function(r53cli) {
+      xhr = r53cli.changeResourceRecordSets(hzid, '<?xml version="1.0" encoding="UTF-8"?>' + xml);
+    }.bind(this), $('main-window-loader'));
+
+    return (xhr && xhr.success());
+  },
+
+  appendChange: function(row, xml) {
+    var change = new XML('<Change></Change>');
+    change.Action = 'CREATE';
+    change.ResourceRecordSet.Name = row.Name;
+
+    var alias = (row.Type == 'A (Alias)');
+    change.ResourceRecordSet.Type =  alias ? 'A' : row.Type;
+
+    if (row.SetIdentifier) {
+      change.ResourceRecordSet.SetIdentifier = row.SetIdentifier;
+    }
+
+    if (row.Weight) {
+      change.ResourceRecordSet.Weight = row.Weight;
+    }
+
+    if (alias) {
+      var endpoint = ELBClient.getEndpoint(row.Value[0]);
+
+      if (!endpoint) {
+        alert('Cannot get ELB endpoint.');
+        return false;
+      }
+
+      var canonicalHostedZoneNameId = null;
+
+      $ELB(endpoint, function(elbcli) {
+        var xhr = elbcli.query('DescribeLoadBalancers');
+
+        for each (var member in xhr.xml()..LoadBalancerDescriptions.member) {
+          var r = new RegExp('^' + member.DNSName.toString().replace(/\./g, '\\.') + '\\.?$');
+
+          if (r.test(row.Value[0])) {
+            canonicalHostedZoneNameId = member.CanonicalHostedZoneNameID.toString();
+            break;
+          }
+        }
+
+        if (!canonicalHostedZoneNameId) {
+          alert('Cannot get Canonical Hosted Zone Name ID.');
+        }
+      }.bind(this), $('main-window-loader'));
+
+      if (!canonicalHostedZoneNameId) {
+        return false;
+      }
+
+      change.ResourceRecordSet.AliasTarget.HostedZoneId = canonicalHostedZoneNameId;
+      change.ResourceRecordSet.AliasTarget.DNSName = row.Value[0];
+    } else {
+      change.ResourceRecordSet.TTL = row.TTL;
+
+      for (var i = 0; i < row.Value.length; i ++) {
+        var rr = new XML('<ResourceRecord></ResourceRecord>');
+        rr.Value = row.Value[i];
+        change.ResourceRecordSet.ResourceRecords.ResourceRecord += rr;
+      }
+    }
+
+    xml.ChangeBatch.Changes.Change += change;
+
+    return true;
   },
 
   basehzid: function(hzid) {
