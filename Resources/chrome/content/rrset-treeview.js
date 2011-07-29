@@ -103,6 +103,14 @@ RRSetTreeView.prototype = {
       var xhr = r53cli.listResourceRecordSets(this.hostedZoneId);
 
       for each (var member in xhr.xml()..ResourceRecordSets.ResourceRecordSet) {
+        var name = member.Name.toString();
+
+        try {
+          member.Name = eval('"' + name + '"');
+        } catch (e) {
+          member.Name = name;
+        }
+
         this.rows.push(member);
       }
     }.bind(this), $('rrset-window-loader'));
