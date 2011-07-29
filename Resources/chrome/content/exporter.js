@@ -27,7 +27,7 @@ Exporter.prototype = {
     var fp = createFilePicker();
     fp.init(window, 'Export Data to JSON', Components.interfaces.nsIFilePicker.modeSave);
     fp.defaultString = 'zones.json';
-    fp.appendFilter('JavaScript Object Notation (*.json)', '*.json');
+    fp.appendFilter('JSON (*.json)', '*.json');
 
     var result = fp.show();
 
