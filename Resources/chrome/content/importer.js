@@ -27,7 +27,7 @@ Importer.prototype = {
     var fp = createFilePicker();
     fp.init(window, 'Import Data from JSON', Components.interfaces.nsIFilePicker.modeOpen);
     fp.defaultString = 'zones.json';
-    fp.appendFilter('JavaScript Object Notation (*.json)', '*.json');
+    fp.appendFilter('JSON (*.json)', '*.json');
 
     var result = fp.show();
 
@@ -60,16 +60,21 @@ Importer.prototype = {
       for (var name in new_data) {
         var row = data[name];
         var new_row = new_data[name];
+        var hzid = null;
 
-        if (!row) {
-          this.createHostedZone(name, new_row.CallerReference, new_row.Comment);
+        if (row) {
+          hzid = row.HostedZoneId;
+        } else {
+          hzid = this.createHostedZone(name, new_row.CallerReference, new_row.Comment);
         }
 
         var rrsets = ((row || {}).ResourceRecordSets || []);
         var new_rrsets = (new_row.ResourceRecordSets || []);
 
-        this.createRRSets(rrsets, new_rrsets);
+        this.createRRSets(hzid, rrsets, new_rrsets);
       }
+
+      $view.refresh();
     } catch (e) {
       alert(e);
       return false;
@@ -79,16 +84,11 @@ Importer.prototype = {
   getCurrentData: function() {
     var data = {};
 
-    function basehzid(hzid) {
-      hzid = hzid.split('/');
-      return hzid[hzid.length - 1];
-    }
-
     $R53(function(r53cli) {
       var xhr = r53cli.listHostedZones();
       for each (var member in xhr.xml()..HostedZones.HostedZone) {
         data[member.Name.toString()] = {
-          HostedZoneId: basehzid(member.Id.toString()),
+          HostedZoneId: this.basehzid(member.Id.toString()),
           CallerReference: member.CallerReference.toString(),
           Comment: member.Config.Comment.toString(),
           ResourceRecordSets: []
@@ -142,12 +142,21 @@ Importer.prototype = {
       xml.HostedZoneConfig.Comment = comment;
     }
 
+    var hzid = null;
+
     $R53(function(r53cli) {
-      r53cli.createHostedZone('<?xml version="1.0" encoding="UTF-8"?>' + xml);
-      this.refresh();
+      var xhr = r53cli.createHostedZone('<?xml version="1.0" encoding="UTF-8"?>' + xml);
+      hzid = this.basehzid(xhr.xml().HostedZone.Id.toString());
     }.bind(this), $('main-window-loader'));
+
+    return hzid;
   },
 
-  createRRSets: function(rrsets, new_rrsets) {
+  createRRSets: function(hzid, rrsets, new_rrsets) {
+  },
+
+  basehzid: function(hzid) {
+    hzid = hzid.split('/');
+    return hzid[hzid.length - 1];
   }
 };
