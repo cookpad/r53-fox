@@ -61,7 +61,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
           </menulist>
         </row>
         <row>
-          <label control="rrset-create-window-identifier" value="SetIdentifier" />
+          <label control="rrset-create-window-identifier" value="Set Identifier" />
           <textbox id="rrset-create-window-identifier" />
         </row>
         <row>
