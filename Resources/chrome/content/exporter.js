@@ -66,37 +66,65 @@ Exporter.prototype = {
       var hzid = data[name].HostedZoneId;
 
       $R53(function(r53cli) {
-        var xhr = r53cli.listResourceRecordSets(hzid);
+        function walkRows(nextRecord) {
+          var params = [];
+          nextRecord = (nextRecord || {});
 
-        for each (var member in xhr.xml()..ResourceRecordSets.ResourceRecordSet) {
-          var values = [];
-          var name = member.Name.toString();
+          nextRecord.name && params.push(['name', nextRecord.name]);
+          nextRecord.type && params.push(['type', nextRecord.type]);
+          nextRecord.identifier && params.push(['identifier', nextRecord.identifier]);
 
-          var row = {
-            SetIdentifier: member.SetIdentifier.toString(),
-            Weight: member.Weight.toString(),
-            TTL: member.TTL.toString(),
-            Value: values
-          };
+          var xhr = r53cli.listResourceRecordSets(hzid, params);
+          var xml = xhr.xml();
 
-          try {
-            row.Name = eval('"' + name + '"');
-          } catch (e) {
-            row.Name = name;
-          }
+          for each (var member in xml..ResourceRecordSets.ResourceRecordSet) {
+            var values = [];
+            var name = member.Name.toString();
 
-          if (member.AliasTarget.toString().trim()) {
-            row.Type = 'A (Alias)';
-            values.push(member.AliasTarget.DNSName.toString());
-          } else {
-            for each (var rr in member..ResourceRecords.ResourceRecord) {
-              values.push(rr.Value.toString());
+            var row = {
+              SetIdentifier: member.SetIdentifier.toString(),
+              Weight: member.Weight.toString(),
+              TTL: member.TTL.toString(),
+              Value: values
+            };
+
+            try {
+              row.Name = eval('"' + name + '"');
+            } catch (e) {
+              row.Name = name;
             }
 
-            row.Type = member.Type.toString();
+            if (member.AliasTarget.toString().trim()) {
+              row.Type = 'A (Alias)';
+              values.push(member.AliasTarget.DNSName.toString());
+            } else {
+              for each (var rr in member..ResourceRecords.ResourceRecord) {
+                values.push(rr.Value.toString());
+              }
+
+              row.Type = member.Type.toString();
+            }
+
+            rrsets.push(row);
           }
 
-          rrsets.push(row);
+          var isTruncated = ((xml.IsTruncated || '').toString().trim().toLowerCase() == 'true');
+
+          if (isTruncated) {
+            var nextRecord = {};
+            nextRecord.name = (xml.NextRecordName || '').toString().trim();
+            nextRecord.type = (xml.NextRecordType || '').toString().trim();
+            nextRecord.identifier = (xml.NextRecordIdentifier || '').toString().trim();
+            return nextRecord;
+          } else {
+            return null;
+          }
+        }
+
+        var nextRecord = {};
+
+        while (nextRecord) {
+          nextRecord = walkRows(nextRecord);
         }
       }.bind(this), $('main-window-loader'));
     }
