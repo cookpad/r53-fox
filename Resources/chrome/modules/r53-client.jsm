@@ -233,8 +233,10 @@ R53Client.prototype = {
 
     var encoded = [];
 
-    for (var key in params) {
-      var val = encode(kvs[key]);
+    for (var i = 0; i < params.length; i++) {
+      var key = params[i][0];
+      var val = params[i][1];
+      val = encode(val);
       encoded.push(key + '=' + val);
     }
 
