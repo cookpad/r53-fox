@@ -89,10 +89,29 @@ HostedZoneTreeView.prototype = {
     this.rows.length = 0;
 
     $R53(function(r53cli) {
-      var xhr = r53cli.listHostedZones();
+      function walkRows(rows, marker) {
+        var params = [];
 
-      for each (var member in xhr.xml()..HostedZones.HostedZone) {
-        this.rows.push(member);
+        if (marker) {
+          params.push(['marker', marker])
+        }
+
+        var xhr = r53cli.listHostedZones(params);
+        var xml = xhr.xml();
+
+        for each (var member in xml..HostedZones.HostedZone) {
+          rows.push(member);
+        }
+
+        var isTruncated = ((xml.IsTruncated || '').toString().trim().toLowerCase() == 'true');
+
+        return isTruncated ? (xml.NextMarker || '').toString().trim() : null;
+      }
+
+      var marker = walkRows(this.rows);
+
+      while (marker) {
+        marker = walkRows(this.rows, marker);
       }
     }.bind(this), $('main-window-loader'));
 
