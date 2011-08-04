@@ -89,64 +89,6 @@ Importer.prototype = {
     }
   },
 
-  getCurrentData: function() {
-    var data = {};
-
-    $R53(function(r53cli) {
-      var xhr = r53cli.listHostedZones();
-      for each (var member in xhr.xml()..HostedZones.HostedZone) {
-        data[member.Name.toString()] = {
-          HostedZoneId: this.basehzid(member.Id.toString()),
-          CallerReference: member.CallerReference.toString(),
-          Comment: member.Config.Comment.toString(),
-          ResourceRecordSets: []
-        };
-      }
-    }.bind(this), $('main-window-loader'));
-
-    for (var name in data) {
-      var rrsets = data[name].ResourceRecordSets;
-      var hzid = data[name].HostedZoneId;
-
-      $R53(function(r53cli) {
-        var xhr = r53cli.listResourceRecordSets(hzid);
-
-        for each (var member in xhr.xml()..ResourceRecordSets.ResourceRecordSet) {
-          var values = [];
-          var name = member.Name.toString();
-
-          var row = {
-            SetIdentifier: member.SetIdentifier.toString(),
-            Weight: member.Weight.toString(),
-            TTL: member.TTL.toString(),
-            Value: values
-          };
-
-          try {
-            row.Name = eval('"' + name + '"');
-          } catch (e) {
-            row.Name = name;
-          }
-
-          if (member.AliasTarget.toString().trim()) {
-            row.Type = 'A (Alias)';
-            values.push(member.AliasTarget.DNSName.toString());
-          } else {
-            for each (var rr in member..ResourceRecords.ResourceRecord) {
-              values.push(rr.Value.toString());
-            }
-
-            row.Type = member.Type.toString();
-          }
-
-          rrsets.push(row);
-        }
-      }.bind(this), $('main-window-loader'));
-    }
-
-    return data;
-  },
-
   createHostedZone: function(name, comment) {
     var xml = <CreateHostedZoneRequest xmlns="https://route53.amazonaws.com/doc/2011-05-05/"></CreateHostedZoneRequest>;
     xml.Name = name;
