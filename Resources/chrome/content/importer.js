@@ -38,6 +38,7 @@ Importer.prototype = {
     case Components.interfaces.nsIFilePicker.returnOK:
     case Components.interfaces.nsIFilePicker.returnReplace:
       this.readDataFromFile(fp.file);
+      alert('Import was completed.');
       $view.refresh();
       break;
     }
