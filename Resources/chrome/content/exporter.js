@@ -56,14 +56,34 @@ Exporter.prototype = {
     }
 
     $R53(function(r53cli) {
-      var xhr = r53cli.listHostedZones();
-      for each (var member in xhr.xml()..HostedZones.HostedZone) {
-        data[member.Name.toString()] = {
-          HostedZoneId: basehzid(member.Id.toString()),
-          CallerReference: member.CallerReference.toString(),
-          Comment: member.Config.Comment.toString(),
-          ResourceRecordSets: []
-        };
+      function walkRows(marker) {
+        var params = [];
+
+        if (marker) {
+          params.push(['marker', marker])
+        }
+
+        var xhr = r53cli.listHostedZones(params);
+        var xml = xhr.xml();
+
+        for each (var member in xml..HostedZones.HostedZone) {
+          data[member.Name.toString()] = {
+            HostedZoneId: basehzid(member.Id.toString()),
+            CallerReference: member.CallerReference.toString(),
+            Comment: member.Config.Comment.toString(),
+            ResourceRecordSets: []
+          };
+        }
+
+        var isTruncated = ((xml.IsTruncated || '').toString().trim().toLowerCase() == 'true');
+
+        return isTruncated ? (xml.NextMarker || '').toString().trim() : null;
+      }
+
+      var marker = walkRows();
+
+      while (marker) {
+        marker = walkRows(marker);
       }
     }.bind(this), $('main-window-loader'));
 
