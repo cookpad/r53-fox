@@ -19,7 +19,8 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 Components.utils.import('resource://r53fox/io.jsm');
 
-function Importer() {
+function Importer(exporter) {
+  this.exporter = exporter;
 }
 
 Importer.prototype = {
@@ -57,7 +58,7 @@ Importer.prototype = {
       return false;
     }
 
-    var data = this.getCurrentData();
+    var data = this.exporter.getCurrentData();
 
     try {
       for (var name in new_data) {
