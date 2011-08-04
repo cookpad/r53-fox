@@ -100,18 +100,46 @@ RRSetTreeView.prototype = {
     this.rows.length = 0;
 
     $R53(function(r53cli) {
-      var xhr = r53cli.listResourceRecordSets(this.hostedZoneId);
+      function walkRows(hzid, rows, nextRecord) {
+        var params = [];
+        nextRecord = (nextRecord || {});
 
-      for each (var member in xhr.xml()..ResourceRecordSets.ResourceRecordSet) {
-        var name = member.Name.toString();
+        nextRecord.name && params.push(['name', nextRecord.name]);
+        nextRecord.type && params.push(['type', nextRecord.type]);
+        nextRecord.identifier && params.push(['identifier', nextRecord.identifier]);
 
-        try {
-          member.Name = eval('"' + name + '"');
-        } catch (e) {
-          member.Name = name;
+        var xhr = r53cli.listResourceRecordSets(hzid, params);
+        var xml = xhr.xml();
+
+        for each (var member in xml..ResourceRecordSets.ResourceRecordSet) {
+          var name = member.Name.toString();
+
+          try {
+            member.Name = eval('"' + name + '"');
+          } catch (e) {
+            member.Name = name;
+          }
+
+          rows.push(member);
         }
 
-        this.rows.push(member);
+        var isTruncated = ((xml.IsTruncated || '').toString().trim().toLowerCase() == 'true');
+
+        if (isTruncated) {
+          var nextRecord = {};
+          nextRecord.name = (xml.NextRecordName || '').toString().trim();
+          nextRecord.type = (xml.NextRecordType || '').toString().trim();
+          nextRecord.identifier = (xml.NextRecordIdentifier || '').toString().trim();
+          return nextRecord;
+        } else {
+          return null;
+        }
+      }
+
+      var nextRecord = {};
+
+      while (nextRecord) {
+        nextRecord = walkRows(this.hostedZoneId, this.rows, nextRecord);
       }
     }.bind(this), $('rrset-window-loader'));
 
