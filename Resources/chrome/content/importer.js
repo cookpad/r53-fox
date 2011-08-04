@@ -38,7 +38,6 @@ Importer.prototype = {
     case Components.interfaces.nsIFilePicker.returnOK:
     case Components.interfaces.nsIFilePicker.returnReplace:
       this.readDataFromFile(fp.file);
-      alert('Import was completed.');
       $view.refresh();
       break;
     }
@@ -88,6 +87,8 @@ Importer.prototype = {
       alert(e);
       return false;
     }
+
+    alert('Import was completed.');
   },
 
   createHostedZone: function(name, comment) {

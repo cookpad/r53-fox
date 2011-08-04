@@ -44,6 +44,7 @@ Exporter.prototype = {
   writeDataToFile: function(fout) {
     var data = this.getCurrentData();
     var rv = FileIO.write(fout, JSON.stringify(data, null, "  "));
+    alert('Export was completed.');
     return rv;
   },
 
