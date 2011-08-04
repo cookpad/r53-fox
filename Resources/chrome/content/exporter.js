@@ -42,6 +42,12 @@ Exporter.prototype = {
   },
 
   writeDataToFile: function(fout) {
+    var data = this.getCurrentData();
+    var rv = FileIO.write(fout, JSON.stringify(data, null, "  "));
+    return rv;
+  },
+
+  getCurrentData: function() {
     var data = {};
 
     function basehzid(hzid) {
@@ -129,8 +135,6 @@ Exporter.prototype = {
       }.bind(this), $('main-window-loader'));
     }
 
-    var rv = FileIO.write(fout, JSON.stringify(data, null, "  "));
-
-    return rv;
+    return data;
   }
 };
