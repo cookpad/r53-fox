@@ -40,7 +40,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
       <separator style="width:10px;" />
       <textnode style="font-weight:bold;">R53 Fox</textnode>
       <separator style="width:5px;" />
-      <textnode>version 0.2.1-1</textnode>
+      <textnode>version 0.2.2</textnode>
     </hbox>
     <vbox style="margin:5px;">
       <textnode>Developer: SUGAWARA Genki</textnode>
