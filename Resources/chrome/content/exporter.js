@@ -68,6 +68,14 @@ Exporter.prototype = {
         var xml = xhr.xml();
 
         for each (var member in xml..HostedZones.HostedZone) {
+          var name = member.Name.toString();
+
+          try {
+            member.Name = eval('"' + name + '"');
+          } catch (e) {
+            member.Name = name;
+          }
+
           data[member.Name.toString()] = {
             HostedZoneId: basehzid(member.Id.toString()),
             CallerReference: member.CallerReference.toString(),
