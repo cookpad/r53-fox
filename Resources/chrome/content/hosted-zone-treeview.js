@@ -100,6 +100,14 @@ HostedZoneTreeView.prototype = {
         var xml = xhr.xml();
 
         for each (var member in xml..HostedZones.HostedZone) {
+          var name = member.Name.toString();
+
+          try {
+            member.Name = eval('"' + name + '"');
+          } catch (e) {
+            member.Name = name;
+          }
+
           rows.push(member);
         }
 
