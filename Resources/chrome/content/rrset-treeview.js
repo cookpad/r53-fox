@@ -676,9 +676,21 @@ RRSetTreeView.prototype = {
       var change_create = new XML('<Change></Change>');
       change_create.Action = 'CREATE';
 
-      for (var name in change) {
-        create_row[name] = change[name]
+      function editInlineRRSet_updateNode(name) {
+        if (change[name] == null) { return; }
+
+        delete create_row[name];
+
+        if (change[name]) {
+          var node = new XML('<' + name + '>' + change[name] + '</' + name + '>');
+          create_row.insertChildAfter(create_row.Type[0], node);
+        }
       }
+
+      // depend on order
+      editInlineRRSet_updateNode('TTL');
+      editInlineRRSet_updateNode('Weight');
+      editInlineRRSet_updateNode('SetIdentifier');
 
       change_create.ResourceRecordSet = create_row;
       xml.ChangeBatch.Changes.Change += change_create;
