@@ -47,7 +47,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
     <hbox>
       RegExp Search:
       <textbox id="rrset-tree-filter" oninput="$view.invalidate();" />
-      <button label="Clear" oncommand="with($('rrset-tree-filter')) { value = ''; oninput(); }" />
+      <button id="rrset-tree-filter-clear-button" label="Clear" oncommand="with($('rrset-tree-filter')) { value = ''; oninput(); }" />
     </hbox>
     <tree id="rrset-tree" seltype="multiple" enableColumnDrag="true" flex="1" ondblclick="$view.showDetail(event);">
       <treecols>
@@ -68,6 +68,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
       <button label="Create" oncommand="$view.createRRSet();" />
       <button label="Change Info" id="rrset-window-change-info-button" disabled="true" oncommand="$view.showChangeInfo();" />
       <button label="Refresh" oncommand="$view.refresh();" />
+      <button id="rrset-tree-toggle-editable-button" label="Edit" oncommand="$view.toggleEditable();" />
       <spacer flex="1" />
       <button label="Close" oncommand="close();" />
     </hbox>

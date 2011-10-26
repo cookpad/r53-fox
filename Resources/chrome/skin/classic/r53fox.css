@@ -54,3 +54,8 @@ treechildren::-moz-tree-row(odd)                 { background-color: #EEEEEE; }
 treechildren::-moz-tree-row(odd, selected)       { background-color: #0A246A; }
 treechildren::-moz-tree-cell-text(selected)      { color: #FFFFFF; }
 treechildren::-moz-tree-cell-text(odd, selected) { color: #FFFFFF; }
+
+treechildren::-moz-tree-cell-text(updated) {
+  font-weight: bold;
+  color: red;
+}

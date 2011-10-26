@@ -27,14 +27,19 @@ function RRSetTreeView(hostedZoneId, hostedZoneName) {
   this.rowCount = 0;
   this.selection = null;
   this.sorted = false;
+  this.changes = {};
 }
 
 RRSetTreeView.prototype = {
   getCellText: function(row, column) {
+    var colid = $COLID(column);
+    var updval = (this.changes[row] || {})[colid];
+    if (updval) { return updval; }
+
     var row = this.printRows[row];
     var text = $CELL(row, column.id);
 
-    if (/Type$/.test(column.id.toString()) && row.AliasTarget.toString()) {
+    if ('Type' == colid && row.AliasTarget.toString()) {
       text = 'A (Alias)';
     }
 
@@ -45,11 +50,78 @@ RRSetTreeView.prototype = {
     this.tree = tree;
   },
 
+  toggleEditable: function() {
+    var rrsetTree = this.tree.element;
+    var toggleButton = $('rrset-tree-toggle-editable-button');
+    var filter = $('rrset-tree-filter');
+    var clearButton = $('rrset-tree-filter-clear-button');
+
+    // toggle editable
+    rrsetTree.editable = (!rrsetTree.editable);
+
+    toggleButton.label = rrsetTree.editable ? "Save / Cancel" : "Edit";
+    filter.disabled = (!!rrsetTree.editable);
+    clearButton.disabled = (!!rrsetTree.editable);
+
+    if (!rrsetTree.editable) {
+      var hasChange = false;
+
+      for (var i in this.changes) {
+        hasChange = true;
+        break;
+      }
+
+      if (hasChange) {
+        // update
+        alert('update');
+      }
+
+      this.changes = {};
+      this.invalidate();
+    }
+  },
+
+  isTreeEditable: function() {
+    var rrsetTree = this.tree.element;
+    return (!!rrsetTree.editable);
+  },
+
+  isEditable: function(row, column) {
+    if (!this.isTreeEditable()) {
+      return false;
+    }
+
+    return ({SetIdentifier:1, Weight:1, TTL:1})[$COLID(column)];
+  },
+
+  setCellText: function(row, column, value) {
+    this.changes[row] = (this.changes[row] || {});
+    this.changes[row][$COLID(column)] = value;
+    this.tree.invalidate();
+  },
+
+  getCellProperties: function(row, column, props) {
+    if (!this.isTreeEditable()) {
+      return;
+    }
+
+    var updval = (this.changes[row] || {})[$COLID(column)];
+
+    if (updval) {
+      var aserv = Components.classes['@mozilla.org/atom-service;1'].getService(Components.interfaces.nsIAtomService);
+      props.AppendElement(aserv.getAtom('updated'));
+    }
+  },
+
   isSorted: function() {
     return this.sorted;
   },
 
   cycleHeader: function(column) {
+    if (this.isTreeEditable()) {
+      return;
+    }
+
     var row = this.selectedRow();
 
     sortRowsByColumn(column, this.rows);
@@ -266,6 +338,10 @@ RRSetTreeView.prototype = {
   },
 
   showDetail: function(event) {
+    if (this.isTreeEditable()) {
+      return;
+    }
+
     var row = this.selectedRow();
 
     if (!row || (event && event.target.tagName != 'treechildren')) {
@@ -276,6 +352,10 @@ RRSetTreeView.prototype = {
   },
 
   editRRSet: function() {
+    if (this.isTreeEditable()) {
+      return;
+    }
+
     var row = this.selectedRow();
     if (!row) { return; }
 
@@ -416,6 +496,10 @@ RRSetTreeView.prototype = {
   },
 
   deleteRRSet: function() {
+    if (this.isTreeEditable()) {
+      return;
+    }
+
     var selectedRows = this.selectedMultipleRows();
     if (!selectedRows || selectedRows.length < 1) { return; }
 
