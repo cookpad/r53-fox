@@ -637,7 +637,22 @@ RRSetTreeView.prototype = {
     var row_changes = [];
 
     for (var i in this.changes) {
-      row_changes.push([this.printRows[i], this.changes[i]]);
+      var chg = this.changes[i];
+      if (chg == null) { continue; }
+
+      var hasChange = false;
+      var new_chg = {};
+
+      for (var j in chg) {
+        if (chg[j] != null) {
+          hasChange = true;
+          new_chg[j] = chg[j];
+        }
+      }
+
+      if (hasChange) {
+        row_changes.push([this.printRows[i], new_chg]);
+      }
     }
 
     if (row_changes.length == 0) { return; }
