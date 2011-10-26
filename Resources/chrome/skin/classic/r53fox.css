@@ -52,8 +52,8 @@ button.mini-button {
 treechildren::-moz-tree-row(selected)            { background-color: #0A246A; }
 treechildren::-moz-tree-row(odd)                 { background-color: #EEEEEE; }
 treechildren::-moz-tree-row(odd, selected)       { background-color: #0A246A; }
-treechildren::-moz-tree-cell-text(selected)      { color: #FFFFFF; }
-treechildren::-moz-tree-cell-text(odd, selected) { color: #FFFFFF; }
+treechildren::-moz-tree-cell-text(selected)      { color: white; }
+treechildren::-moz-tree-cell-text(odd, selected) { color: white; }
 
 treechildren::-moz-tree-cell(updated)            { background-color: #FFE0E0; }
-treechildren::-moz-tree-cell-text(updated)       { font-weight: bold; }
+treechildren::-moz-tree-cell-text(updated)       { font-weight: bold; color: black; }

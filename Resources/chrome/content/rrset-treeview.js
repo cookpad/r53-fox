@@ -34,7 +34,7 @@ RRSetTreeView.prototype = {
   getCellText: function(row, column) {
     var colid = $COLID(column);
     var updval = (this.changes[row] || {})[colid];
-    if (updval) { return updval; }
+    if (updval != null) { return updval; }
 
     var row = this.printRows[row];
     var text = $CELL(row, column.id);
@@ -122,7 +122,7 @@ RRSetTreeView.prototype = {
 
     var updval = (this.changes[row] || {})[$COLID(column)];
 
-    if (updval) {
+    if (updval != null) {
       var aserv = Components.classes['@mozilla.org/atom-service;1'].getService(Components.interfaces.nsIAtomService);
       props.AppendElement(aserv.getAtom('updated'));
     }
