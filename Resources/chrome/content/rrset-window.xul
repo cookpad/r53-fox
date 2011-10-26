@@ -65,10 +65,10 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
     </tree>
 
     <hbox>
-      <button label="Create" oncommand="$view.createRRSet();" />
-      <button label="Change Info" id="rrset-window-change-info-button" disabled="true" oncommand="$view.showChangeInfo();" />
-      <button label="Refresh" oncommand="$view.refresh();" />
-      <button id="rrset-tree-toggle-editable-button" label="Edit" oncommand="$view.toggleEditable();" />
+      <button id="rrset-window-create-button" label="Create" oncommand="$view.createRRSet();" />
+      <button id="rrset-window-change-info-button" label="Change Info" disabled="true" oncommand="$view.showChangeInfo();" />
+      <button id="rrset-window-refresh-button" label="Refresh" oncommand="$view.refresh();" />
+      <button id="rrset-window-toggle-editable-button" label="Edit" oncommand="$view.toggleEditable();" />
       <spacer flex="1" />
       <button label="Close" oncommand="close();" />
     </hbox>

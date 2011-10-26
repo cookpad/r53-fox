@@ -52,48 +52,68 @@ RRSetTreeView.prototype = {
 
   toggleEditable: function() {
     var rrsetTree = this.tree.element;
-    var toggleButton = $('rrset-tree-toggle-editable-button');
+    var toggleButton = $('rrset-window-toggle-editable-button');
     var filter = $('rrset-tree-filter');
     var clearButton = $('rrset-tree-filter-clear-button');
+    var createButton = $('rrset-window-create-button');
+    var changeInfoButton = $('rrset-window-change-info-button');
+    var refreshButton = $('rrset-window-refresh-button');
 
     var update = true;
+    var editable = (!!rrsetTree.editable);
 
-    if (rrsetTree.editable) {
+    if (editable) {
       var hasChange = false;
-      for (var i in this.changes) { hasChange = true; break; }
+
+      for (var i in this.changes) {
+        var chg = this.changes[i];
+        if (chg == null) { continue; }
+
+        for (var j in chg) {
+          if (chg[j] != null) {
+            hasChange = true;
+            break;
+          }
+        }
+
+        if (hasChange) { break; }
+      }
 
       if (hasChange && confirm('Are you sure you want to update ResourceSets?')) {
-        try {
         update = this.editInlineRRSet();
-        } catch(e) { alert(e); }
       } else {
-        update = false;
+        update = (!hasChange);
       }
     }
+
+    rrsetTree.editable = editable;
 
     if (update) {
       // toggle editable
       rrsetTree.editable = (!rrsetTree.editable);
 
-      toggleButton.label = rrsetTree.editable ? 'Save' : 'Edit';
-      filter.disabled = (!!rrsetTree.editable);
-      clearButton.disabled = (!!rrsetTree.editable);
+      toggleButton.label = rrsetTree.editable ? 'Save' : 'Inline Edit';
+      refreshButton.label = rrsetTree.editable ? 'Cancel' : 'Refresh';
+      filter.disabled = clearButton.disabled = createButton.disabled = changeInfoButton.disabled = (!!rrsetTree.editable);
     }
   },
 
   disableEditable: function() {
     var rrsetTree = this.tree.element;
-    var toggleButton = $('rrset-tree-toggle-editable-button');
+    var toggleButton = $('rrset-window-toggle-editable-button');
     var filter = $('rrset-tree-filter');
     var clearButton = $('rrset-tree-filter-clear-button');
+    var createButton = $('rrset-window-create-button');
+    var changeInfoButton = $('rrset-window-change-info-button');
+    var refreshButton = $('rrset-window-refresh-button');
 
     this.changes = {};
     this.invalidate();
 
     rrsetTree.editable = false;
-    toggleButton.label = 'Edit';
-    filter.disabled = false;
-    clearButton.disabled = false;
+    toggleButton.label = 'Inline Edit';
+    refreshButton.label = 'Refresh';
+    filter.disabled = clearButton.disabled = createButton.disabled = changeInfoButton.disabled = false;
   },
 
   isTreeEditable: function() {
@@ -110,9 +130,20 @@ RRSetTreeView.prototype = {
   },
 
   setCellText: function(row, column, value) {
+    try {
+    value = (value || '').trim();
+    var oldval = ($CELL(this.printRows[row], column.id) || '').trim();
+    var colid = $COLID(column);
+
+    if (value == oldval) {
+      (this.changes[row] || {})[colid] = null;
+      return;
+    }
+
     this.changes[row] = (this.changes[row] || {});
-    this.changes[row][$COLID(column)] = (value || '').trim();
+    this.changes[row][colid] = value;
     this.tree.invalidate();
+    }catch(e) { alert(e); }
   },
 
   getCellProperties: function(row, column, props) {
@@ -267,6 +298,10 @@ RRSetTreeView.prototype = {
   },
 
   createRRSet: function() {
+    if (this.isTreeEditable()) {
+      return;
+    }
+
     var result = openModalDialog('rrset-create-window', {hostedZoneName:this.hostedZoneName});
     if (!result) { return; }
 
@@ -561,6 +596,10 @@ RRSetTreeView.prototype = {
   },
 
   showChangeInfo: function() {
+    if (this.isTreeEditable()) {
+      return;
+    }
+
     var changeIds = Prefs.getChangeIds(this.hostedZoneId);
 
     if ((changeIds || []).length == 0) {

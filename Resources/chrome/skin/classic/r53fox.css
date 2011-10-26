@@ -56,4 +56,4 @@ treechildren::-moz-tree-cell-text(selected)      { color: white; }
 treechildren::-moz-tree-cell-text(odd, selected) { color: white; }
 
 treechildren::-moz-tree-cell(updated)            { background-color: #FFE0E0; }
-treechildren::-moz-tree-cell-text(updated)       { font-weight: bold; color: black; }
+treechildren::-moz-tree-cell-text(updated)       { font-weight: bold; color:black; }
