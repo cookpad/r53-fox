@@ -186,6 +186,11 @@ function openURL(url) {
   launcher.launchWithURI(uri, null);
 }
 
+function $COLID(column) {
+  column = column.id.toString().split('.');
+  return column[column.length - 1];
+}
+
 function $CELL(row, netedId, depth) {
   netedId = netedId.toString();
 
