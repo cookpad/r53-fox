@@ -99,6 +99,7 @@ function onAccept() {
 
   if ((identifier && !weight) || (!identifier && weight)) {
     alert("Please input 'Identifier' and 'Weight'.");
+    return;
   }
 
   if (type == 'AA') {
