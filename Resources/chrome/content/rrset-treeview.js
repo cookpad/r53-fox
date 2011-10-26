@@ -56,29 +56,44 @@ RRSetTreeView.prototype = {
     var filter = $('rrset-tree-filter');
     var clearButton = $('rrset-tree-filter-clear-button');
 
-    // toggle editable
-    rrsetTree.editable = (!rrsetTree.editable);
+    var update = true;
 
-    toggleButton.label = rrsetTree.editable ? "Save / Cancel" : "Edit";
-    filter.disabled = (!!rrsetTree.editable);
-    clearButton.disabled = (!!rrsetTree.editable);
-
-    if (!rrsetTree.editable) {
+    if (rrsetTree.editable) {
       var hasChange = false;
+      for (var i in this.changes) { hasChange = true; break; }
 
-      for (var i in this.changes) {
-        hasChange = true;
-        break;
+      if (hasChange && confirm('Are you sure you want to update ResourceSets?')) {
+        try {
+        update = this.editInlineRRSet();
+        } catch(e) { alert(e); }
+      } else {
+        update = false;
       }
-
-      if (hasChange) {
-        // update
-        alert('update');
-      }
-
-      this.changes = {};
-      this.invalidate();
     }
+
+    if (update) {
+      // toggle editable
+      rrsetTree.editable = (!rrsetTree.editable);
+
+      toggleButton.label = rrsetTree.editable ? 'Save' : 'Edit';
+      filter.disabled = (!!rrsetTree.editable);
+      clearButton.disabled = (!!rrsetTree.editable);
+    }
+  },
+
+  disableEditable: function() {
+    var rrsetTree = this.tree.element;
+    var toggleButton = $('rrset-tree-toggle-editable-button');
+    var filter = $('rrset-tree-filter');
+    var clearButton = $('rrset-tree-filter-clear-button');
+
+    this.changes = {};
+    this.invalidate();
+
+    rrsetTree.editable = false;
+    toggleButton.label = 'Edit';
+    filter.disabled = false;
+    clearButton.disabled = false;
   },
 
   isTreeEditable: function() {
@@ -96,7 +111,7 @@ RRSetTreeView.prototype = {
 
   setCellText: function(row, column, value) {
     this.changes[row] = (this.changes[row] || {});
-    this.changes[row][$COLID(column)] = value;
+    this.changes[row][$COLID(column)] = (value || '').trim();
     this.tree.invalidate();
   },
 
@@ -219,6 +234,7 @@ RRSetTreeView.prototype = {
     var changeIds = Prefs.getChangeIds(this.hostedZoneId);
     chageInfoButton.disabled = ((changeIds || []).length == 0);
 
+    this.disableEditable();
     this.invalidate();
   },
 
@@ -576,6 +592,69 @@ RRSetTreeView.prototype = {
     }
 
     this.rows
+  },
+
+  editInlineRRSet: function() {
+    var row_changes = [];
+
+    for (var i in this.changes) {
+      row_changes.push([this.printRows[i], this.changes[i]]);
+    }
+
+    if (row_changes.length == 0) { return; }
+
+    var xml = <ChangeResourceRecordSetsRequest xmlns="https://route53.amazonaws.com/doc/2011-05-05/"></ChangeResourceRecordSetsRequest>;
+
+    // DELETE
+    function editInlineRRSet_delete(delete_row) {
+      var change_delete = new XML('<Change></Change>');
+      change_delete.Action = 'DELETE';
+      change_delete.ResourceRecordSet = delete_row;
+      xml.ChangeBatch.Changes.Change += change_delete;
+    }
+
+    for (var i = 0; i < row_changes.length; i++) {
+      editInlineRRSet_delete(row_changes[i][0]);
+    }
+
+    // CREATE
+    function editInlineRRSet_create(create_row, change) {
+      var change_create = new XML('<Change></Change>');
+      change_create.Action = 'CREATE';
+
+      for (var name in change) {
+        create_row[name] = change[name]
+      }
+
+      change_create.ResourceRecordSet = create_row;
+      xml.ChangeBatch.Changes.Change += change_create;
+    }
+
+    for (var i = 0; i < row_changes.length; i++) {
+      editInlineRRSet_create(row_changes[i][0], row_changes[i][1]);
+    }
+
+    var xhr = null;
+
+    $R53(function(r53cli) {
+      xhr = r53cli.changeResourceRecordSets(this.hostedZoneId, '<?xml version="1.0" encoding="UTF-8"?>' + xml);
+    }.bind(this), $('rrset-window-loader'));
+
+    var retval = false;
+
+    if (xhr && xhr.success()) {
+      this.changes = {}
+      var changeInfo = xhr.xml()..ChangeInfo;
+      var chid = changeInfo.Id.toString();
+      chid = chid.split('/');
+      chid = chid[chid.length - 1];
+      Prefs.addChangeId(this.hostedZoneId, chid, changeInfo.SubmittedAt);
+      openModalDialog('change-info-detail-window', {changeInfo:changeInfo});
+      this.refresh();
+      retval = true;
+    }
+
+    return retval;
   },
 
   copyColumnToClipboard: function(name) {

@@ -121,7 +121,7 @@ AccountTreeView.prototype = {
 
     var userName = row[0];
 
-    if (!confirm("Are you sure you want to delete '" + userName + "' ?")) {
+    if (!confirm("Are you sure you want to delete '" + userName + "'?")) {
       return;
     }
 

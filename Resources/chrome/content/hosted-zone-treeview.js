@@ -172,7 +172,7 @@ HostedZoneTreeView.prototype = {
     var hzid = this.hostedZoneId(row);
     var name = row.Name.toString();
 
-    if (!confirm("Are you sure you want to delete '" + name + "' ?")) {
+    if (!confirm("Are you sure you want to delete '" + name + "'?")) {
       return;
     }
 

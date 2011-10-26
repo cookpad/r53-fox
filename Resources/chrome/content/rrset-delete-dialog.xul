@@ -33,7 +33,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
   <!-- inputs -->
   <vbox flex="1" style="margin:5px;">
     <description class="header">
-      Are you sure you want to delete ?
+      Are you sure you want to delete?
     </description>
     <label control="rrset-delete-dialog-comment" value="Comment (option)" />
     <textbox id="rrset-delete-dialog-comment" multiline="true" flex="1" />
