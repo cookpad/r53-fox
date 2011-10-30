@@ -126,7 +126,7 @@ RRSetTreeView.prototype = {
       return false;
     }
 
-    return ({SetIdentifier:1, Weight:1, TTL:1})[$COLID(column)];
+    return ({Name:1, SetIdentifier:1, Weight:1, TTL:1})[$COLID(column)];
   },
 
   setCellText: function(row, column, value) {
@@ -676,6 +676,8 @@ RRSetTreeView.prototype = {
       var change_create = new XML('<Change></Change>');
       change_create.Action = 'CREATE';
 
+      create_row.Name = change['Name'];
+
       function editInlineRRSet_updateNode(name, beforeOrAfter, nodeName) {
         if (change[name] == null) { return; }
 
@@ -716,9 +718,13 @@ RRSetTreeView.prototype = {
       chid = chid[chid.length - 1];
       Prefs.addChangeId(this.hostedZoneId, chid, changeInfo.SubmittedAt);
       openModalDialog('change-info-detail-window', {changeInfo:changeInfo});
-      this.refresh();
-      retval = true;
+      //this.refresh();
+      //retval = true;
     }
+
+    // always reload
+    this.refresh();
+    retval = true;
 
     return retval;
   },
